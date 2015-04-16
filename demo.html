@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="asq-elements" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  <title>asq-order</title>
+
+  <script src="../webcomponentsjs/webcomponents.js"></script>
+
+  <link href="asq-order.html" rel="import">
+  
+
+  <link href="../asq-exercise/asq-exercise.html" rel="import">
+  
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+  <style shim-shadowdom>
+    body {
+      font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;
+      font-size: 14px;
+      margin: 0;
+      padding: 24px;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+      -webkit-touch-callout: none;
+    }
+    
+    [target] {
+
+      padding: 4px;
+      margin-bottom: 20px;
+      line-height: 1.42857143;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      -webkit-transition: border .2s ease-in-out;
+           -o-transition: border .2s ease-in-out;
+              transition: border .2s ease-in-out;
+
+    }
+    [targets] {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+
+    [target] {
+      cursor: pointer;
+      display: block;
+      
+      min-height: 30px;
+      min-width: 150px;
+
+    }
+
+    [object] {
+      cursor: pointer;
+    }
+
+
+    asq-exercise > asq-order {
+      max-width: 400px;
+      /*text-align: center;*/
+      max-width: 50px auto;
+    }
+
+    asq-order /deep/ section {
+
+    }
+
+    body > asq-exercise {
+      display: block;
+      margin: 50px auto;
+      width: 600px;
+    }
+
+    asq-order /deep/ [object] {
+      display: block;
+      color: #a94442;
+      background-color: #f2dede;
+      border-color: #ebccd1;
+      border-color: #faebcc;
+      padding: 5px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+
+      margin: 2px;
+    }
+
+  </style>
+
+</head>
+<body>
+
+
+  <asq-exercise>
+    <asq-stem><h3>1-M</h3></asq-stem>
+    <asq-order hints>
+      <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
+      <img src="./cs1.png"></img>  
+
+      <div targets >
+        <div target name="words" horizontal layout></div>
+      </div>
+
+      <!-- presenter wants a specific order -->
+      <div objects horizontal layout>
+        <div object order="3" name="schneit">schneit</div>
+        <div object order="1" name="und">und</div>
+        <div object order="2" name="kalt">kalt</div>
+        <div object order="2" name="es ist">es ist</div>
+      </div>
+
+      <!-- presenter wants random each time -->
+       <div objects horizontal layout>
+        <div object name="schneit">schneit</div>
+        <div object name="und">und</div>
+        <div object name="kalt">kalt</div>
+        <div object name="es ist">es ist</div>
+      </div>
+    </asq-order>
+  </asq-exercise>
+
+
+  
+
+  <script>
+
+  </script>
+</body>
+</html>
