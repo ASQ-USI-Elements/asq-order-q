@@ -8,118 +8,238 @@
 TODO ......
 
 ##### Example
-    
-    <asq-exercise>
-    <asq-stem><h3>1-M</h3></asq-stem>
-    <asq-order hints>
-      <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
-      <img src="./cs1.png"></img>  
-
-      <div targets >
-        <div target name="words" horizontal layout></div>
+    <asq-order >
+      <div targets>
+        <div target name="Long"><span>Long</span></div>
+        <div target name="Short"><span>Short</span></div>
       </div>
-
-      <div objects horizontal layout>
-        <div object order="3" name="schneit">schneit</div>
-        <div object order="1" name="und">und</div>
-        <div object order="2" name="kalt">kalt</div>
-        <div object order="2" name="es ist">es ist</div>
+      <div objects>
+        <div object name="glas">Gl<b>a</b>s</div>
+        <div object name="nudeln">N<b>u</b>deln</div>
+        <div object name="platz">Pl<b>a</b>tz</div>
+        <div object name="vier">v<b>i</b>er</div>
       </div>
-
     </asq-order>
-  </asq-exercise>
+
 
 @element asq-order
 @group ASQ Elements
 @blurb ...
-@homepage http://github.com/ASQ_USI/c-question
+@homepage http://github.com/ASQ_USI/asq-order
 -->
-<polymer-element name="asq-order" attributes="mode">
+<polymer-element name="asq-order" attributes="mode targets objects solution hint">
   <template>
-    <style shim-shadowdom>
-      :host {
-
-
-      }
-
-    </style>
-
-    <asq-match id="match" mode="{{mode}}" on-asq-match="{{onMatch}}"></asq-match>
+    <style>
     
-    <content id="question" select="img"></content>
-    <content id="question" select="asq-stem"></content>
-    <content id="buckets" select="[targets]"></content>
-    <content id="objects" select="[objects]"></content>
-
+    </style>
+    
+    <asq-match id="match" mode="{{mode}}" on-asq-match="{{onMatch}}"></asq-match>
+    <content id="stem" select="asq-stem" ></content>
+    <wrapper><content id="items" select="*" ></content></wrapper>
+    
   </template>
 
   <script>
   (function() {
 
-    var modes = {
-      SINGLE: "single",
-      O2M: "one_to_many",
-      M2O: "many_to_one",
-      M2M: 'many_to_many'
-    };
 
     var p = {
 
+      valueattr: 'name',
+
+      targets: null,
+
+      objects: null,
+
+      itemsSelector: '',
+
+      activateEvent: 'tap',
+
       mode: '1-m',
 
-      modeState: modes.SINGLE,
+      interchangeable: true,
 
-      index: 0,
+      solution: '{und} {kalt} {es ist} {schneit}',
 
-      objects: [],
+      hint: false,
 
-      bucket: null,
 
-      created: function() {
-        this.addEventListener('asq-match', this.onMatch);
+      ready: function() {
+        this.activateListener = this.onObjectTap.bind(this);
+        this.objectsObserver = new MutationObserver(this.updateObjects.bind(this));
+
+        if (!this.targets) this.targets = this;
+        if (!this.objects) this.objects = this;
       },
 
-      domReady: function() {
-        this.objects = this.getUnmatchedObjects();
-        this.bucket = this.getBucket();
-        console.log('ss', this.bucket);
-        this.bindEventForObjects();
-      },
-
-      bindEventForObjects: function() {
-        this.objects.forEach(function(el, index){
-          el.addEventListener('click', this.onObjectTap.bind(this));
-        }, this);
-      },
-
-      onObjectTap: function(event) {
-        var obj = event.target;
-        console.log(event);
-        if ( ! this.isMatch(this.bucket, obj) ) {
-          this.bucket.appendChild(obj);
-        } else {
-          this.getObjectDIV().appendChild(obj);
+      updateObjects: function() {
+        for (var x of this.getUnmatchedObjects()) {
+          this.removeListener(x);
+          this.addListener(x);
         }
-
-        this.match(this.bucket, obj);     
       },
+
+
+      targetsChanged: function(old) {
+        if (old && typeof old === "object") {
+          this.removeListener(old);
+          this.targetObserver.disconnect();
+        }
+        if (!this.targets) this.targets = this;
+        if ( typeof this.targets === "string" ) {
+          var targets = this.parentNode.querySelector(this.targets);
+          if ( targets ) this.targets = targets;
+          else this.targets = this;
+        } 
+      },
+
+      objectsChanged: function(old) {
+        if (old && typeof old === "object") {
+          this.removeListener(old);
+          this.objectsObserver.disconnect();
+        }
+        if (!this.objects) this.objects = this;
+        if ( typeof this.objects === "string") {
+          var objects = this.parentNode.querySelector(this.objects);
+
+          if ( objects ) this.objects = objects;
+          else this.objects = this;
+        } 
+        this.objectsObserver.observe(this.objects, {childList: true});
+
+
+       for (var x of this.getUnmatchedObjects()) {
+          this.addListener(x);
+        }
+      },
+
+      addListener: function(node) {
+        Polymer.addEventListener(node, this.activateEvent, this.activateListener);
+      },
+
+      removeListener: function(node) {
+        Polymer.removeEventListener(node, this.activateEvent, this.activateListener);
+      },
+
+      onSwitchTarget: function(event) {
+        this.switchTarget(event.target.parentNode);
+        event.stopPropagation();
+      },
+
+      switchTarget: function(object) {
+        var targets = this.getTargets();
+        var oldTarget = object.parentNode;
+        if (!oldTarget || !targets || targets.length <= 1) return;
+
+        var index = targets.indexOf(oldTarget);
+        index = index+1 == targets.length ? 0 : index+1;
+        var peerBucket = targets[index];
+
+        this.match(peerBucket, object);
+      },
+
+      onObjectTap: function(e) {
+        var object = e.currentTarget;
+        if ( !object ) return;          
+
+        this.match(this.getTarget(), object);
+      },
+
 
       onMatch: function(e) {
+        var target = this.getTarget().getAttribute(this.valueattr) == e.detail.key ?
+                    this.getTarget() : undefined;
+        var object = this.findObjecttByAttribute(e.detail.value);
+
+        if ( !target || !object ) {
+          return
+        }
+
+        if ( e.detail.isMatch ) {
+          target.appendChild(object);
+        } else {
+          this.objects.appendChild(object);
+        }
+
         this.prettyPrint();
       },
 
-
       isMatch: function(k, v) {
-        console.log(k, v);
-        return this.$.match.isMatch(k.getAttribute("name"), v.getAttribute("name"));
+        return this.$.match.isMatch(k.getAttribute(this.valueattr), 
+          v.getAttribute(this.valueattr));
       },
 
+      /**
+       * Set up a match between target and object
+       * @method match
+       * @param  {Object} k target
+       * @param  {Object} v object
+       */
+      match: function(target, object) {
 
-      match: function(k, v) {
-        this.$.match.match(k.getAttribute("name"), v.getAttribute("name"));
+        k =  typeof target === 'object' ? 
+            target.getAttribute(this.valueattr) : target;
+        v = typeof object === 'object' ? 
+            object.getAttribute(this.valueattr) : object;
+        
+        this.$.match.match(k, v);
       },
 
+      findObjecttByAttribute: function(attr) {
 
+        for ( var object of this.getUnmatchedObjects() ) {
+          if ( object.getAttribute(this.valueattr) == attr) {
+            return object;
+          }
+        }
+
+        var target = this.getTarget();
+        for ( var object of this.getMatchedObjectsOfTarget(target) ) {
+          if ( object.getAttribute(this.valueattr) == attr) {
+            return object;
+          }
+        }
+        return null;
+      },
+
+      getMatchedObjectsOfTarget: function(target) {
+        var objects = [];
+        target.childNodes.array().forEach(function(e) {
+          e.hasAttribute('object') && objects.push(e);
+        });
+        return objects;
+      },
+
+      getTarget: function() {
+        var targets = [];
+        this.targets.childNodes.array().forEach(function(e) {
+          e.nodeType == 1 && e.hasAttribute('target') && targets.push(e);
+        });
+        return targets.length >= 1 ? targets[0] : null;
+      },
+
+      /**
+       * Get all unmatched objects.
+       * @method getUnmatchedObjects 
+       * @return {array} UnmatchedObjects
+       */
+      getUnmatchedObjects: function() {
+        var objects = [];
+        this.objects.childNodes.array().forEach(function(e) {
+            e.nodeType == 1 && e.hasAttribute('object') && objects.push(e);
+        });
+        return objects.reverse();
+
+      },
+
+      prettyPrint: function() {
+        var matches = this.$.match.getMatches();
+        console.log('- - - - match', matches.length, ' - - - -');
+        matches.forEach(function(m, index){
+          console.log('  ', index, ' : ' , m.key, m.value);
+        });
+        console.log('\n');
+      },
 
       /**
        * The `submit` method returns an object that respresents the submission of this question. The object has the following structure:
@@ -147,76 +267,6 @@ TODO ......
           timestamp: new Date(),
           submission: submission
         };
-      },
-
-      getBucket: function() {
-        var targets = [];
-        this.$.buckets.getDistributedNodes().array().forEach(function(el, idx) {
-          if ( el.hasAttribute('targets') ) {
-            el.childNodes.array().filter(function(e) {
-              return e.nodeType == 1;
-            }).forEach(function(e){
-              e.hasAttribute('target') && targets.push(e);
-            });
-          }
-        });
-        return targets.length >= 1 ? targets[0] : null;
-
-      },
-
-      getObjectDIV: function() {
-        return this.$.objects.getDistributedNodes().array().filter(function(el) {
-          return el.nodeType == 1 && el.nodeName == 'DIV'
-        })[0];
-      },
-
-      getUnmatchedObjects: function() {
-        var objects = [];
-        this.$.objects.getDistributedNodes().array().forEach(function(el, idx) {
-          if ( el.hasAttribute('objects') ) {
-            el.childNodes.array().filter(function(e) {
-              return e.nodeType == 1;
-            }).forEach(function(e){
-              e.hasAttribute('object') && objects.push(e);
-            });
-          }
-        });
-        return objects;
-      },
-
-      modeChanged: function() {
-        switch(this.mode) {
-          case "1-1":
-          case "single":
-            this.modeState = modes.SINGLE;
-            break;
-          case "1-n":
-          case "1-m":
-            this.modeState = modes.O2M;
-            break;
-          case "n-1":
-          case "m-1":
-            this.modeState = modes.M2O;
-            break;
-          case "m-n":
-          case "n-m":
-          case "multi":
-            this.modeState = modes.M2M;
-            break;
-          default:
-            this.modeState = SINGLE;
-            this.mode = '1-1';
-        }
-
-      },
-
-      prettyPrint: function() {
-        var ms = this.$.match.getMatches();
-        console.log(' - - - - match', ms.length, ' - - - -');
-        ms.forEach(function(k, index){
-          console.log('  [', index, ']   ' , k.from, ' -> ', k.value);
-        });
-        console.log(' ');
       }
 
     }

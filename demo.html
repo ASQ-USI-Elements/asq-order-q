@@ -26,8 +26,7 @@
       -webkit-tap-highlight-color: rgba(0,0,0,0);
       -webkit-touch-callout: none;
     }
-    
-    [target] {
+    asq-order /deep/ [target] {
 
       padding: 4px;
       margin-bottom: 20px;
@@ -40,40 +39,52 @@
               transition: border .2s ease-in-out;
 
     }
-    [targets] {
+    div#targets {
       display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
+      flex-direction: column;
+      justify-content: center;
     }
 
-    [target] {
-      cursor: pointer;
+    asq-order /deep/ wrapper{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    asq-order /deep/ [target] {
       display: block;
       
-      min-height: 30px;
-      min-width: 150px;
-
+      min-height: 45px;
+      /*min-width: 100px;*/
+      /*min-width: 75px;*/
+      width: 200px auto;
     }
 
-    [object] {
+    asq-order /deep/ [target] > [object] {
+      cursor: default;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin: 2px;
+    }
+
+    asq-exercise > asq-order {
+      max-width: 220px;
+      /*text-align: center;*/
+      max-width: 0 auto;
+    }
+
+    asq-order > object {
       cursor: pointer;
     }
 
-
-    asq-exercise > asq-order {
-      max-width: 400px;
-      /*text-align: center;*/
-      max-width: 50px auto;
-    }
-
-    asq-order /deep/ section {
-
-    }
+  /*  asq-order /deep/ section {
+      text-align: center;
+    }*/
 
     body > asq-exercise {
       display: block;
-      margin: 50px auto;
-      width: 600px;
+      width: 350px;
     }
 
     asq-order /deep/ [object] {
@@ -82,20 +93,61 @@
       background-color: #f2dede;
       border-color: #ebccd1;
       border-color: #faebcc;
-      padding: 5px;
+      padding: 8px 6px;
       border: 1px solid transparent;
       border-radius: 4px;
 
-      margin: 2px;
+      max-width: 150px;
+      margin: 1px auto;
+    }
+
+    asq-order > [object] > b {
+      color: red;
+    }
+
+    asq-order > img {
+      max-width: 200px;
+
     }
 
   </style>
 
 </head>
 <body>
+  <!-- <asq-exercise>
+    <asq-stem><h3>1-M</h3></asq-stem>
+    <asq-order hints>
+      <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
+      <img src="./cs1.png"></img>  
+
+      <div target name="words" horizontal layout></div>
+
+      <div object name="schneit">schneit</div>
+      <div object name="und">und</div>
+      <div object name="kalt">kalt</div>
+      <div object name="es ist">es ist</div>
+    </asq-order>
+  </asq-exercise> -->
 
 
   <asq-exercise>
+    <asq-stem><h3>1-M</h3></asq-stem>
+    <asq-order objects="#objects" hints vertical layout>
+      <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
+      <img src="./cs1.png"></img>  
+
+      <div target name="words" horizontal layout></div>
+      <div id="objects" horizontal layout>
+        <div object name="schneit">schneit</div>
+        <div object name="und">und</div>
+        <div object name="kalt">kalt</div>
+        <div object name="es ist">es ist</div>
+      <div>
+    </asq-order>
+  </asq-exercise>
+
+
+  <!-- <asq-exercise>
     <asq-stem><h3>1-M</h3></asq-stem>
     <asq-order hints>
       <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
@@ -105,7 +157,7 @@
         <div target name="words" horizontal layout></div>
       </div>
 
-      <!-- presenter wants a specific order -->
+
       <div objects horizontal layout>
         <div object order="3" name="schneit">schneit</div>
         <div object order="1" name="und">und</div>
@@ -113,7 +165,7 @@
         <div object order="2" name="es ist">es ist</div>
       </div>
 
-      <!-- presenter wants random each time -->
+
        <div objects horizontal layout>
         <div object name="schneit">schneit</div>
         <div object name="und">und</div>
@@ -121,7 +173,7 @@
         <div object name="es ist">es ist</div>
       </div>
     </asq-order>
-  </asq-exercise>
+  </asq-exercise> -->
 
 
   

@@ -1,0 +1,219 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../asq-base/asq-base.html">
+<link rel="import" href="../asq-match/asq-match.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<!--
+TODO ......
+
+##### Example
+    
+    <asq-exercise>
+    <asq-stem><h3>1-M</h3></asq-stem>
+    <asq-order hints>
+      <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
+      <img src="./cs1.png"></img>  
+
+      <div targets >
+        <div target name="words" horizontal layout></div>
+      </div>
+
+      <div objects horizontal layout>
+        <div object order="3" name="schneit">schneit</div>
+        <div object order="1" name="und">und</div>
+        <div object order="2" name="kalt">kalt</div>
+        <div object order="2" name="es ist">es ist</div>
+      </div>
+
+    </asq-order>
+  </asq-exercise>
+
+@element asq-order
+@group ASQ Elements
+@blurb ...
+@homepage http://github.com/ASQ_USI/c-question
+-->
+<polymer-element name="asq-order" attributes="mode targets objects">
+  <template>
+    <style shim-shadowdom>
+      :host {
+
+
+      }
+
+    </style>
+
+    <asq-match id="match" mode="{{mode}}" on-asq-match="{{onMatch}}"></asq-match>
+    <content id="question" select="asq-stem"></content>
+    <wrapper><content id="items" select="*" ></content></wrapper>
+
+  </template>
+
+  <script>
+  (function() {
+
+
+    var p = {
+
+      mode: '1-m',
+
+
+      index: 0,
+
+      objects: [],
+
+      bucket: null,
+
+      created: function() {
+        this.addEventListener('asq-match', this.onMatch);
+      },
+
+      domReady: function() {
+        this.objects = this.getUnmatchedObjects();
+        this.bucket = this.getBucket();
+        console.log('ss', this.bucket);
+        this.bindEventForObjects();
+      },
+
+      bindEventForObjects: function() {
+        this.objects.forEach(function(el, index){
+          el.addEventListener('click', this.onObjectTap.bind(this));
+        }, this);
+      },
+
+      onObjectTap: function(event) {
+        var obj = event.target;
+        console.log(event);
+        if ( ! this.isMatch(this.bucket, obj) ) {
+          this.bucket.appendChild(obj);
+        } else {
+          this.getObjectDIV().appendChild(obj);
+        }
+
+        this.match(this.bucket, obj);     
+      },
+
+      onMatch: function(e) {
+        this.prettyPrint();
+      },
+
+
+      isMatch: function(k, v) {
+        console.log(k, v);
+        return this.$.match.isMatch(k.getAttribute("name"), v.getAttribute("name"));
+      },
+
+
+      match: function(k, v) {
+        this.$.match.match(k.getAttribute("name"), v.getAttribute("name"));
+      },
+
+
+
+      /**
+       * The `submit` method returns an object that respresents the submission of this question. The object has the following structure:
+
+           {
+              questionUid: this.uid, 
+              timestamp: new Date(),
+
+              // Array of the result of submit() called for each option of the question
+              submission: [] 
+           }
+       * Only enabled when the `role` of the element is <b>viewer</b>.
+       *
+       * @method submit
+       */
+      submit: function() {
+        if ( this.role !== this.roles.VIEWER ) {
+          return;
+        }
+
+        var submission = this.$.match.getMatches();
+
+        return {
+          questionUid: this.uid,
+          timestamp: new Date(),
+          submission: submission
+        };
+      },
+
+      getBucket: function() {
+        var targets = [];
+        this.$.buckets.getDistributedNodes().array().forEach(function(el, idx) {
+          if ( el.hasAttribute('targets') ) {
+            el.childNodes.array().filter(function(e) {
+              return e.nodeType == 1;
+            }).forEach(function(e){
+              e.hasAttribute('target') && targets.push(e);
+            });
+          }
+        });
+        return targets.length >= 1 ? targets[0] : null;
+
+      },
+
+      getObjectDIV: function() {
+        return this.$.objects.getDistributedNodes().array().filter(function(el) {
+          return el.nodeType == 1 && el.nodeName == 'DIV'
+        })[0];
+      },
+
+      getUnmatchedObjects: function() {
+        var objects = [];
+        this.$.objects.getDistributedNodes().array().forEach(function(el, idx) {
+          if ( el.hasAttribute('objects') ) {
+            el.childNodes.array().filter(function(e) {
+              return e.nodeType == 1;
+            }).forEach(function(e){
+              e.hasAttribute('object') && objects.push(e);
+            });
+          }
+        });
+        return objects;
+      },
+
+      modeChanged: function() {
+        switch(this.mode) {
+          case "1-1":
+          case "single":
+            this.modeState = modes.SINGLE;
+            break;
+          case "1-n":
+          case "1-m":
+            this.modeState = modes.O2M;
+            break;
+          case "n-1":
+          case "m-1":
+            this.modeState = modes.M2O;
+            break;
+          case "m-n":
+          case "n-m":
+          case "multi":
+            this.modeState = modes.M2M;
+            break;
+          default:
+            this.modeState = SINGLE;
+            this.mode = '1-1';
+        }
+
+      },
+
+      prettyPrint: function() {
+        var ms = this.$.match.getMatches();
+        console.log(' - - - - match', ms.length, ' - - - -');
+        ms.forEach(function(k, index){
+          console.log('  [', index, ']   ' , k.from, ' -> ', k.value);
+        });
+        console.log(' ');
+      }
+
+    }
+
+    ASQ.asqify(p, true);
+    Polymer('asq-order', p);
+
+  })();
+  </script>
+</polymer-element>
