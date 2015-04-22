@@ -5,37 +5,61 @@
 <link rel="import" href="../paper-button/paper-button.html">
 
 <!--
-TODO ......
 
-##### Example
-    <asq-order >
-      <div targets>
-        <div target name="Long"><span>Long</span></div>
-        <div target name="Short"><span>Short</span></div>
-      </div>
-      <div objects>
-        <div object name="glas">Gl<b>a</b>s</div>
-        <div object name="nudeln">N<b>u</b>deln</div>
-        <div object name="platz">Pl<b>a</b>tz</div>
-        <div object name="vier">v<b>i</b>er</div>
-      </div>
-    </asq-order>
+asq-order is a kind of ordering question type. It also can be used
+to define sorting questions.
+
+It has many usages, one of which is shown below. It is the basic usage.
+
+##### Examples
+
+      <asq-order objects="#objects" vertical layout>
+        <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
+        <img src="./cs1.png"></img>  
+
+        <div target name="words" horizontal layout></div>
+        <div id="objects" horizontal layout>
+          <div object name="schneit">schneit</div>
+          <div object name="und">und</div>
+          <div object name="kalt">kalt</div>
+          <div object name="es ist">es ist</div>
+        <div>
+      </asq-order>
+
+##### Anther example
+
+      <asq-order objects="#objects" vertical layout
+          hints solution='{und} {kalt} {es ist} {schneit}'
+          errorclass='error'>
+        <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
+        <img src="./cs1.png"></img>  
+
+        <div target name="words" horizontal layout></div>
+        <div id="objects" horizontal layout>
+          <div object name="schneit">schneit</div>
+          <div object name="und">und</div>
+          <div object name="kalt">kalt</div>
+          <div object name="es ist">es ist</div>
+        <div>
+      </asq-order>
 
 
 @element asq-order
 @group ASQ Elements
 @blurb ...
-@homepage http://github.com/ASQ_USI/asq-order
+@homepage http://github.com/ASQ-USI/asq-order
 -->
-<polymer-element name="asq-order" attributes="mode targets objects solution hint">
+<polymer-element name="asq-order" attributes="mode targets objects solution hints errorclass">
   <template>
     <style>
-    
+      :host {
+        display: block;
+      }      
     </style>
     
     <asq-match id="match" mode="{{mode}}" on-asq-match="{{onMatch}}"></asq-match>
     <content id="stem" select="asq-stem" ></content>
-    <wrapper><content id="items" select="*" ></content></wrapper>
+    <content id="items" select="*" ></content>
     
   </template>
 
@@ -45,31 +69,111 @@ TODO ......
 
     var p = {
 
+      /**
+       * Specifies the attribute to be used for "selected" attribute.
+       *
+       * @attribute valueattr
+       * @type string
+       * @default 'name'
+       */
       valueattr: 'name',
 
+      /**
+       * The element contains all the `target`s. If this is not set 
+       * `asq-order` is the container.
+       * @attribute targets
+       * @type string | object
+       */
       targets: null,
 
+      /**
+       * The element contains all the `objects`s. If this is not set 
+       * `asq-order` is the container.
+       *
+       *      objects="#objects"
+       *
+       * @attribute objects
+       * @type string | object
+       */
       objects: null,
 
-      itemsSelector: '',
-
+      /**
+       * The event that would be fired from the `object`s to indicate
+       * it is being selected.
+       *
+       * @attribute activateEvent
+       * @type string
+       * @default 'tap'
+       */
       activateEvent: 'tap',
 
       mode: '1-m',
 
-      interchangeable: true,
+      /**
+       * Denote whether do validation and hint for every input.
+       * If this attribute is true, then the `solution` attribute 
+       * is also expected.
+       * @attribute hints
+       * @type Boolean
+       */
+      hints: false,
 
-      solution: '{und} {kalt} {es ist} {schneit}',
+      /**
+       * Specify the name of class that will be add to target when
+       * attribute `hints` is true and the current input sequence 
+       * is not correct.
+       * @attribute errorclass
+       * @default 'error-solution'
+       * @type String
+       */
+      errorclass: 'error-solution',
 
-      hint: false,
-
+      /**
+       * Specify the solution of this question. It can be used to 
+       * with attribute `hints`. 
+       * The format is shown below.
+       *       
+       *      solution='{und} {kalt} {es ist} {schneit}' 
+       * 
+       * @attribute solution
+       * @type String
+       */
+      solution: '',
 
       ready: function() {
         this.activateListener = this.onObjectTap.bind(this);
+        this.targetObserver = new MutationObserver(this.updateTarget.bind(this));
         this.objectsObserver = new MutationObserver(this.updateObjects.bind(this));
 
         if (!this.targets) this.targets = this;
         if (!this.objects) this.objects = this;
+      },
+
+      // Bbserver function that handle the changes of dom in `target`. 
+      // This mostly happens when new objects are inserted as children 
+      // of `target`, i.e. target and object become matched.  
+      // In this case, if attribute `hints` are true, then it will try 
+      // to validate the input so far.
+      updateTarget: function() {
+        if ( !this.hints ) return;
+
+        if ( !this.validate() ) {
+          this.showHints();
+        } else {
+          this.hideHints();
+        }
+      },
+
+      // show some tips when input sequence is not correct.
+      showHints: function() {
+        var errorClass = !this.errorclass ? 'error-solution' : this.errorclass;
+        this.getTarget().classList.add(errorClass);
+      },
+
+      // hide tips when input sequence becomes correct.
+      hideHints: function() {
+        var errorClass = !this.errorclass ? 'error-solution' : this.errorclass;
+        this.getTarget().classList.remove(errorClass);
       },
 
       updateObjects: function() {
@@ -90,7 +194,8 @@ TODO ......
           var targets = this.parentNode.querySelector(this.targets);
           if ( targets ) this.targets = targets;
           else this.targets = this;
-        } 
+        }
+        this.targetObserver.observe(this.getTarget(), {childList: true}); 
       },
 
       objectsChanged: function(old) {
@@ -121,31 +226,49 @@ TODO ......
         Polymer.removeEventListener(node, this.activateEvent, this.activateListener);
       },
 
-      onSwitchTarget: function(event) {
-        this.switchTarget(event.target.parentNode);
-        event.stopPropagation();
-      },
-
-      switchTarget: function(object) {
-        var targets = this.getTargets();
-        var oldTarget = object.parentNode;
-        if (!oldTarget || !targets || targets.length <= 1) return;
-
-        var index = targets.indexOf(oldTarget);
-        index = index+1 == targets.length ? 0 : index+1;
-        var peerBucket = targets[index];
-
-        this.match(peerBucket, object);
-      },
-
+      // Event handler for `object`s.
       onObjectTap: function(e) {
         var object = e.currentTarget;
         if ( !object ) return;          
-
         this.match(this.getTarget(), object);
       },
 
+      // Compare the current sequence with solution. Return true if 
+      // current sequence is matched by solution.
+      validate: function() {
+        var sequence = this.getMatchedObjectsSequence();
+        var solution = this.parseSolution();
 
+        return solution.toString().indexOf(sequence).toString() == 0 ? true : false;
+      },
+
+      //It is quite similar with method `getMatchedObjects` but it returns
+      // an array of `value-attrs` strings rather than an array of objects.
+      getMatchedObjectsSequence: function() {
+        var sequence = this.getMatchedObjectsOfTarget(this.getTarget());
+        for (var i=0; i<sequence.length; i++) {
+          sequence[i] = sequence[i].getAttribute(this.valueattr);
+        }
+        return sequence;
+      },
+
+      // parse the solution string into an array of strings 
+      parseSolution: function() {
+        var solution = [];
+        var temp = this.solution.trim().split('}');
+
+        for ( var x of temp ) {
+          if ( x && x.length > 0) {
+            var index = x.indexOf('{');
+            solution.push(x.slice(index+1));
+          }
+        }
+        return solution;
+      },
+
+      // Important event handler that listens for `asq-match` event.
+      // When received an event, it will either add an object into the target
+      // or move an object back to `objects`, i.e. make the object `unmatched`
       onMatch: function(e) {
         var target = this.getTarget().getAttribute(this.valueattr) == e.detail.key ?
                     this.getTarget() : undefined;
@@ -164,6 +287,7 @@ TODO ......
         this.prettyPrint();
       },
 
+      // Check if (k, v) pair exists. 
       isMatch: function(k, v) {
         return this.$.match.isMatch(k.getAttribute(this.valueattr), 
           v.getAttribute(this.valueattr));
@@ -185,8 +309,8 @@ TODO ......
         this.$.match.match(k, v);
       },
 
+      // Find the object by the given attribute
       findObjecttByAttribute: function(attr) {
-
         for ( var object of this.getUnmatchedObjects() ) {
           if ( object.getAttribute(this.valueattr) == attr) {
             return object;
@@ -202,6 +326,7 @@ TODO ......
         return null;
       },
 
+      // Return all the objects inside a target
       getMatchedObjectsOfTarget: function(target) {
         var objects = [];
         target.childNodes.array().forEach(function(e) {
@@ -210,6 +335,7 @@ TODO ......
         return objects;
       },
 
+      // Get the (unique, in this case) target.
       getTarget: function() {
         var targets = [];
         this.targets.childNodes.array().forEach(function(e) {
@@ -232,6 +358,8 @@ TODO ......
 
       },
 
+      // Just for debug purpose. 
+      // Print out the matches.
       prettyPrint: function() {
         var matches = this.$.match.getMatches();
         console.log('- - - - match', matches.length, ' - - - -');

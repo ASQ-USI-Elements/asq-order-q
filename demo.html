@@ -11,11 +11,6 @@
   
 
   <link href="../asq-exercise/asq-exercise.html" rel="import">
-  
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
   <style shim-shadowdom>
     body {
@@ -27,7 +22,7 @@
       -webkit-touch-callout: none;
     }
     asq-order /deep/ [target] {
-
+      min-height: 45px;
       padding: 4px;
       margin-bottom: 20px;
       line-height: 1.42857143;
@@ -39,55 +34,22 @@
               transition: border .2s ease-in-out;
 
     }
-    div#targets {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
 
-    asq-order /deep/ wrapper{
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    asq-order /deep/ [target] {
-      display: block;
-      
-      min-height: 45px;
-      /*min-width: 100px;*/
-      /*min-width: 75px;*/
-      width: 200px auto;
-    }
 
     asq-order /deep/ [target] > [object] {
-      cursor: default;
       display: flex;
       flex-direction: column;
       justify-content: center;
       margin: 2px;
     }
 
-    asq-exercise > asq-order {
-      max-width: 220px;
-      /*text-align: center;*/
-      max-width: 0 auto;
-    }
-
-    asq-order > object {
-      cursor: pointer;
-    }
-
-  /*  asq-order /deep/ section {
-      text-align: center;
-    }*/
-
-    body > asq-exercise {
-      display: block;
-      width: 350px;
+    asq-order {
+      width: 220px;
+      max-width: 500px;
     }
 
     asq-order /deep/ [object] {
+      cursor: pointer;
       display: block;
       color: #a94442;
       background-color: #f2dede;
@@ -101,38 +63,25 @@
       margin: 1px auto;
     }
 
-    asq-order > [object] > b {
-      color: red;
+    asq-order > img {
+      max-width: 220px;
+      height: 200px;
+      margin: 1em;
     }
 
-    asq-order > img {
-      max-width: 200px;
-
+    .error-solution {
+      border-color: red;
+      outline: 0;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, .6);
+              box-shadow: inset 0 1px 1px rgba(255, 6, 6, 0.075), 0 0 8px rgba(255, 0, 0, 1);
     }
 
   </style>
 
 </head>
 <body>
-  <!-- <asq-exercise>
-    <asq-stem><h3>1-M</h3></asq-stem>
-    <asq-order hints>
-      <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
-      <img src="./cs1.png"></img>  
-
-      <div target name="words" horizontal layout></div>
-
-      <div object name="schneit">schneit</div>
-      <div object name="und">und</div>
-      <div object name="kalt">kalt</div>
-      <div object name="es ist">es ist</div>
-    </asq-order>
-  </asq-exercise> -->
-
-
-  <asq-exercise>
-    <asq-stem><h3>1-M</h3></asq-stem>
-    <asq-order objects="#objects" hints vertical layout>
+    <asq-order objects="#objects" vertical layout
+      hints solution='{und} {kalt} {es ist} {schneit}' >
       <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
       <img src="./cs1.png"></img>  
 
@@ -144,42 +93,12 @@
         <div object name="es ist">es ist</div>
       <div>
     </asq-order>
-  </asq-exercise>
 
 
-  <!-- <asq-exercise>
-    <asq-stem><h3>1-M</h3></asq-stem>
-    <asq-order hints>
-      <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
-      <img src="./cs1.png"></img>  
 
-      <div targets >
-        <div target name="words" horizontal layout></div>
-      </div>
-
-
-      <div objects horizontal layout>
-        <div object order="3" name="schneit">schneit</div>
-        <div object order="1" name="und">und</div>
-        <div object order="2" name="kalt">kalt</div>
-        <div object order="2" name="es ist">es ist</div>
-      </div>
-
-
-       <div objects horizontal layout>
-        <div object name="schneit">schneit</div>
-        <div object name="und">und</div>
-        <div object name="kalt">kalt</div>
-        <div object name="es ist">es ist</div>
-      </div>
-    </asq-order>
-  </asq-exercise> -->
-
-
-  
 
   <script>
-
+    var s = document.querySelector('asq-order');
   </script>
 </body>
 </html>
