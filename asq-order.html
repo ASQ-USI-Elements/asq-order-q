@@ -79,7 +79,7 @@ It has many usages, one of which is shown below. It is the basic usage.
       valueattr: 'name',
 
       /**
-       * The element contains all the `target`s. If this is not set 
+       * The element contains the **_target_**. If this is not set 
        * `asq-order` is the container.
        * @attribute targets
        * @type string | object
@@ -87,7 +87,7 @@ It has many usages, one of which is shown below. It is the basic usage.
       targets: null,
 
       /**
-       * The element contains all the `objects`s. If this is not set 
+       * The element contains all the **_object_**<sub>s</sub>. If this is not set 
        * `asq-order` is the container.
        *
        *      objects="#objects"
@@ -98,7 +98,7 @@ It has many usages, one of which is shown below. It is the basic usage.
       objects: null,
 
       /**
-       * The event that would be fired from the `object`s to indicate
+       * The event that would be fired from the **_object_**<sub>s</sub> to indicate
        * it is being selected.
        *
        * @attribute activateEvent
@@ -149,9 +149,9 @@ It has many usages, one of which is shown below. It is the basic usage.
         if (!this.objects) this.objects = this;
       },
 
-      // Bbserver function that handle the changes of dom in `target`. 
+      // Observer function that handle the changes of dom in **_target_**`. 
       // This mostly happens when new objects are inserted as children 
-      // of `target`, i.e. target and object become matched.  
+      // of **_target_**`, i.e. target and object become matched.  
       // In this case, if attribute `hints` are true, then it will try 
       // to validate the input so far.
       updateTarget: function() {
@@ -226,7 +226,7 @@ It has many usages, one of which is shown below. It is the basic usage.
         Polymer.removeEventListener(node, this.activateEvent, this.activateListener);
       },
 
-      // Event handler for `object`s.
+      // Event handler for **_object_**<sub>s</sub>.
       onObjectTap: function(e) {
         var object = e.currentTarget;
         if ( !object ) return;          
