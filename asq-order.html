@@ -69,6 +69,17 @@ It has many usages, one of which is shown below. It is the basic usage.
 
     var p = {
 
+      publish: {
+        /**
+         * Disable or endable the element. 
+         * 
+         * @attribute disabled
+         * @type boolean
+         * @default false
+         */
+        disabled: {value: false, reflect: true},
+      },
+
       /**
        * Specifies the attribute to be used for "selected" attribute.
        *
@@ -139,6 +150,25 @@ It has many usages, one of which is shown below. It is the basic usage.
        * @type String
        */
       solution: '',
+
+      disabledChanged: function() {
+        if ( this.disabled ) {
+          for ( var object of this.getUnmatchedObjects() ) {
+            this.removeListener(object);
+          }
+          for ( var object of this.getMatchedObjectsOfTarget(this.getTarget()) ) {
+            this.removeListener(object);
+          }
+
+        } else {
+          for ( var object of this.getUnmatchedObjects() ) {
+            this.addListener(object);
+          }
+          for ( var object of this.getMatchedObjectsOfTarget(this.getTarget()) ) {
+            this.addListener(object);
+          }
+        }
+      },
 
       ready: function() {
         this.activateListener = this.onObjectTap.bind(this);
@@ -213,7 +243,7 @@ It has many usages, one of which is shown below. It is the basic usage.
         this.objectsObserver.observe(this.objects, {childList: true});
 
 
-       for (var x of this.getUnmatchedObjects()) {
+        for (var x of this.getUnmatchedObjects()) {
           this.addListener(x);
         }
       },
