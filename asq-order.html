@@ -226,6 +226,7 @@ It has many usages, one of which is shown below. It is the basic usage.
           else this.targets = this;
         }
         this.targetObserver.observe(this.getTarget(), {childList: true}); 
+        
       },
 
       objectsChanged: function(old) {
@@ -314,7 +315,6 @@ It has many usages, one of which is shown below. It is the basic usage.
           this.objects.appendChild(object);
         }
 
-        this.prettyPrint();
       },
 
       // Check if (k, v) pair exists. 
@@ -358,20 +358,12 @@ It has many usages, one of which is shown below. It is the basic usage.
 
       // Return all the objects inside a target
       getMatchedObjectsOfTarget: function(target) {
-        var objects = [];
-        target.childNodes.array().forEach(function(e) {
-          e.hasAttribute('object') && objects.push(e);
-        });
-        return objects;
+        return target.querySelectorAll('[object]').array();
       },
 
       // Get the (unique, in this case) target.
       getTarget: function() {
-        var targets = [];
-        this.targets.childNodes.array().forEach(function(e) {
-          e.nodeType == 1 && e.hasAttribute('target') && targets.push(e);
-        });
-        return targets.length >= 1 ? targets[0] : null;
+        return this.querySelector('[target]');
       },
 
       /**
@@ -380,12 +372,8 @@ It has many usages, one of which is shown below. It is the basic usage.
        * @return {array} UnmatchedObjects
        */
       getUnmatchedObjects: function() {
-        var objects = [];
-        this.objects.childNodes.array().forEach(function(e) {
-            e.nodeType == 1 && e.hasAttribute('object') && objects.push(e);
-        });
-        return objects.reverse();
-
+        var objects = this.objects.querySelectorAll('[object]');
+        return objects.array().reverse();
       },
 
       // Just for debug purpose. 
