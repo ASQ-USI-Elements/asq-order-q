@@ -1,11 +1,11 @@
 {
-  "name": "asq-order",
-  "version": "0.0.0",
+  "name": "asq-order-q",
+  "version": "0.1.0",
   "description": "ASQ order question type element",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ASQ-USI/asq-order"
+    "url": "git@github.com:ASQ-USI-Elements/asq-order-q.git"
   },
   "dependencies": {
     "asq-plugin": "ASQ-USI/asq-plugin",

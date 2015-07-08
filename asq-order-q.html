@@ -6,14 +6,14 @@
 
 <!--
 
-asq-order is a kind of ordering question type. It also can be used
+asq-order-q is a kind of ordering question type. It also can be used
 to define sorting questions.
 
 It has many usages, one of which is shown below. It is the basic usage.
 
 ##### Examples
 
-      <asq-order objects="#objects" vertical layout>
+      <asq-order-q objects="#objects" vertical layout>
         <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
         <img src="./cs1.png"></img>  
 
@@ -24,11 +24,11 @@ It has many usages, one of which is shown below. It is the basic usage.
           <div object name="kalt">kalt</div>
           <div object name="es ist">es ist</div>
         <div>
-      </asq-order>
+      </asq-order-q>
 
 ##### Anther example
 
-      <asq-order objects="#objects" vertical layout
+      <asq-order-q objects="#objects" vertical layout
           hints solution='{und} {kalt} {es ist} {schneit}'
           errorclass='error'>
         <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
@@ -41,15 +41,15 @@ It has many usages, one of which is shown below. It is the basic usage.
           <div object name="kalt">kalt</div>
           <div object name="es ist">es ist</div>
         <div>
-      </asq-order>
+      </asq-order-q>
 
 
-@element asq-order
+@element asq-order-q
 @group ASQ Elements
 @blurb ...
-@homepage http://github.com/ASQ-USI/asq-order
+@homepage http://github.com/ASQ-USI/asq-order-q
 -->
-<polymer-element name="asq-order" attributes="mode targets objects solution hints errorclass">
+<polymer-element name="asq-order-q" attributes="mode targets objects solution hints errorclass">
   <template>
     <style>
       :host {
@@ -91,7 +91,7 @@ It has many usages, one of which is shown below. It is the basic usage.
 
       /**
        * The element contains the **_target_**. If this is not set 
-       * `asq-order` is the container.
+       * `asq-order-q` is the container.
        * @attribute targets
        * @type string | object
        */
@@ -99,7 +99,7 @@ It has many usages, one of which is shown below. It is the basic usage.
 
       /**
        * The element contains all the **_object_**<sub>s</sub>. If this is not set 
-       * `asq-order` is the container.
+       * `asq-order-q` is the container.
        *
        *      objects="#objects"
        *
@@ -164,7 +164,7 @@ It has many usages, one of which is shown below. It is the basic usage.
       onQuestionType: function(evt){
         if(!evt || ! evt.questionType) return;
 
-        if(evt.questionType == 'asq-order'){
+        if(evt.questionType == 'asq-order-q'){
           if(evt.type == "restorePresenter"){
             if(this.role !== this.roles.PRESENTER) return;
             this.onRestorePresenter(evt);
@@ -470,7 +470,7 @@ It has many usages, one of which is shown below. It is the basic usage.
     }
 
     ASQ.asqify(p, true);
-    Polymer('asq-order', p);
+    Polymer('asq-order-q', p);
 
   })();
   </script>

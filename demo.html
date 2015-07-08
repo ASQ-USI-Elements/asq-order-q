@@ -3,11 +3,11 @@
 <head>
   <meta name="asq-elements" content="width=device-width, initial-scale=1, user-scalable=no">
 
-  <title>asq-order</title>
+  <title>asq-order-q</title>
 
   <script src="../webcomponentsjs/webcomponents.js"></script>
 
-  <link href="asq-order.html" rel="import">
+  <link href="asq-order-q.html" rel="import">
   
 
   <link href="../asq-exercise/asq-exercise.html" rel="import">
@@ -21,7 +21,7 @@
       -webkit-tap-highlight-color: rgba(0,0,0,0);
       -webkit-touch-callout: none;
     }
-    asq-order [target] {
+    asq-order-q [target] {
       min-height: 45px;
       padding: 4px;
       margin-bottom: 20px;
@@ -36,19 +36,19 @@
     }
 
 
-    asq-order [target] > [object] {
+    asq-order-q [target] > [object] {
       display: flex;
       flex-direction: column;
       justify-content: center;
       margin: 2px;
     }
 
-    asq-order {
+    asq-order-q {
       width: 220px;
       max-width: 500px;
     }
 
-    asq-order [object] {
+    asq-order-q [object] {
       cursor: pointer;
       display: block;
       color: #a94442;
@@ -63,7 +63,7 @@
       margin: 1px auto;
     }
 
-    asq-order > img {
+    asq-order-q > img {
       max-width: 220px;
       height: 200px;
       margin: 1em;
@@ -80,7 +80,7 @@
 
 </head>
 <body>
-    <asq-order objects="#objects" vertical layout
+    <asq-order-q objects="#objects" vertical layout
       hints solution='{und} {kalt} {es ist} {schneit}' >
       <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
       <img src="http://www.its.caltech.edu/~atomic/snowcrystals/photos/w031230a113.jpg"></img>  
@@ -92,13 +92,13 @@
         <div object name="kalt">kalt</div>
         <div object name="es ist">es ist</div>
       </div>
-    </asq-order>
+    </asq-order-q>
 
 
 
 
   <script>
-    var s = document.querySelector('asq-order');
+    var s = document.querySelector('asq-order-q');
   </script>
 </body>
 </html>

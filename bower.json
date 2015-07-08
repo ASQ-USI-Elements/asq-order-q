@@ -1,18 +1,22 @@
 {
-  "name": "asq-order",
+  "name": "asq-order-q",
   "version": "0.1.0",
-  "homepage": "https://github.com/ASQ-USI/asq-order",
+  "homepage": "https://github.com/ASQ-USI-Elements/asq-order-q",
   "authors": [
     "Vasileios Triglianos <triglian@gmail.com>",
     "Zhenfei Nie <zhenfei.nie@gmail.com>"
   ],
-  "description": "ASQ order",
+  "description": "ASQ order element.",
   "keywords": [
     "ASQ"
   ],
   "license": "MIT",
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.1"
+    "polymer": "Polymer/polymer#^0.5.1",
+    "paper-button": "Polymer/paper-button#^0.5.2",
+    "asq-base": "ASQ-USI-Elements/asq-base#master",
+    "asq-match": "ASQ-USI-Elements/asq-match#master"
+
   },
   "ignore": [ "index.js", "lib", "package.json", "node_modules", ".npmignore", "test/server"],
   "devDependencies": {
