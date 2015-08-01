@@ -1,0 +1,23 @@
+<x-meta id="asq-order" label="Order" group="ASQ">
+
+  <template>
+    <asq-order-q style="width: 220px;max-width: 500px;"objects="#objects" vertical layout
+      hints solution='{und} {kalt} {es ist} {schneit}' >
+      <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
+      <img style="max-width: 220px;height: 200px;margin: 1em;" src="http://www.its.caltech.edu/~atomic/snowcrystals/photos/w031230a113.jpg"></img>  
+
+      <div target style="min-height: 45px;padding: 4px;margin-bottom: 20px;line-height: 1.42857143;background-color: #fff;border: 1px solid #ddd;border-radius: 4px;-webkit-transition: border .2s ease-in-out;-o-transition: border .2s ease-in-out;transition: border .2s ease-in-out;" name="words" horizontal layout></div>
+      <div id="objects" horizontal layout>
+        <div object style="cursor: pointer;display: block;color: #a94442;background-color: #f2dede;border-color: #ebccd1;border-color: #faebcc;padding: 8px 6px;border: 1px solid transparent;border-radius: 4px;max-width: 150px;margin: 1px auto;" name="schneit">schneit</div>
+        <div object style="cursor: pointer;display: block;color: #a94442;background-color: #f2dede;border-color: #ebccd1;border-color: #faebcc;padding: 8px 6px;border: 1px solid transparent;border-radius: 4px;max-width: 150px;margin: 1px auto;" name="und">und</div>
+        <div object style="cursor: pointer;display: block;color: #a94442;background-color: #f2dede;border-color: #ebccd1;border-color: #faebcc;padding: 8px 6px;border: 1px solid transparent;border-radius: 4px;max-width: 150px;margin: 1px auto;" name="kalt">kalt</div>
+        <div object style="cursor: pointer;display: block;color: #a94442;background-color: #f2dede;border-color: #ebccd1;border-color: #faebcc;padding: 8px 6px;border: 1px solid transparent;border-radius: 4px;max-width: 150px;margin: 1px auto;" name="es ist">es ist</div>
+      </div>
+    </asq-order-q>
+  </template>
+
+  <template id="imports">
+    <link rel="import" href="asq-order-q.html">
+  </template>
+
+</x-meta>
