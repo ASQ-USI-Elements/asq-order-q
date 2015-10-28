@@ -1,0 +1,53 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../asq-base/asq-base.html">
+
+<dom-module id="asq-order-q-presenter">
+  <style>
+
+  </style>
+  <template>
+    <p>presenter</p>
+  </template>
+  <script>
+
+    Polymer({
+      is: 'asq-order-q-presenter',
+
+      behaviors: [
+        ASQ.asqQuestionElementBehavior
+      ],
+
+      properties: {
+        disabled: { 
+          type: Boolean,
+          value: false,
+          notify: true, 
+          reflectToAttribute: true
+        },
+        /**
+         * Event bus to communicate with ASQ
+         */
+        eventBus: {
+          type: Object,
+          notify: true
+        },
+
+        /**
+         * This property is used to specify the matches through a valid 
+         * JSON format string, which is exactlly the stringify string of
+         * `matches`, i.e. JSON.stringify(matches). An example is 
+         * like follows.
+         *
+         *      x.value='["xy", "xz", "yz"]'
+         *      
+         */
+        value: {
+          type: String,
+          value: '{}'
+        }
+      }
+    
+    });
+  </script>
+</dom-module>
+

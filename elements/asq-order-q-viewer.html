@@ -1,0 +1,204 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../asq-base/asq-base.html">
+
+<dom-module id="asq-order-q-viewer">
+  <style>
+
+  </style>
+  <template>
+    <content></content>
+  </template>
+  <script>
+
+    Polymer({
+      is: 'asq-order-q-viewer',
+
+      behaviors: [
+        ASQ.asqQuestionElementBehavior
+      ],
+
+      properties: {
+        /**
+         * 
+         * This is a CSS selector string. Define the items to be
+         * sorted.
+         *
+         */
+        sortable: String,
+
+        /**
+         * 
+         * The unique attribute value of elements to be 
+         * sorted.
+         *
+         * @attribute attrForSorted
+         * @type {string}
+         */
+        attrForSorted: {
+          type: String,
+          value: 'name'
+        },
+
+        /**
+         * 
+         * The class to set on elements when matched.
+         *
+         * @attribute sortedClass
+         * @type {string}
+         */
+        sortedClass: {
+          type: String,
+          value: 'asq-sorted'
+        },
+
+        /**
+         * 
+         * The attribute to set on elements when sorted.
+         *
+         * @attribute sortedAttribute
+         * @type {string}
+         */
+        sortedAttribute: {
+          type: String,
+          value: null
+        },
+
+        disabledClass: {
+          type: String,
+          value: 'asq-disabled'
+        },
+
+        /**
+         * This property is used to specify the matches through a valid 
+         * JSON format string, which is exactlly the stringify string of
+         * `matches`, i.e. JSON.stringify(matches). An example is 
+         * like follows.
+         *
+         *      x.value='["xy", "xz", "yz"]'
+         *      
+         */
+        value: {
+          type: String,
+          value: '{}'
+        },
+
+        disabled: { 
+          type: Boolean,
+          value: false,
+          notify: true, 
+          reflectToAttribute: true
+        },
+
+        /**
+         * Event bus to communicate with ASQ
+         */
+        eventBus: {
+          type: Object,
+          notify: true
+        },
+
+        /**
+         * The set of excluded elements where the key is the `localName` 
+         * of the element that will be ignored from the item list.
+         *
+         * @type {object}
+         * @default {template: 1}
+         */
+        excludedLocalNames: {
+          type: Object,
+          value: function() {
+            return {
+              'template': 1
+            };
+          }
+        },
+      },
+
+      attached: function() {
+        this.async(function() {
+          this._initItems();
+        })
+      },
+
+      created: function() {
+        this._bindFilterItem = this._filterItem.bind(this);
+      },
+
+      _initItems: function() {
+        // drop
+        this.items.forEach(function(x) {
+          x.addEventListener('dragenter', this._onDragEnter);
+          x.addEventListener('dragleave', this._onDragLeave);
+          x.addEventListener('dragover', this._onDragOver);
+          x.addEventListener('drop', this._onDrop.bind(this));
+        }, this);
+
+        // drag
+        this.items.forEach(function(y) {
+          y.setAttribute('draggable', true);
+          y.addEventListener('dragstart', this._onDragStart.bind(this));
+          y.addEventListener('dragend', this._onDragEnd.bind(this));
+        }, this);
+      },
+
+      _disabledChanged: function(disabled) {
+        
+      },
+
+      get items() {
+        var nodes = Polymer.dom(this).queryDistributedElements(this.sortable || '*');
+        return Array.prototype.filter.call(nodes, this._bindFilterItem);
+      },
+
+      _onDragStart: function(e) {
+        if ( this.onDraggingClass ) 
+          e.currentTarget.classList.toggle(this.onDraggingClass, true);
+
+        
+        e.dataTransfer.dropEffect = 'move';
+
+      },
+
+      _onDragEnd: function(e) {
+        if (e.preventDefault) e.preventDefault();
+        if ( this.onDraggingClass ) 
+          e.currentTarget.classList.toggle(this.onDraggingClass, false);
+      },
+
+      _onDragEnter: function(e) {
+        if (e.preventDefault) {
+          e.preventDefault(); 
+        }
+        e.currentTarget.classList.toggle('over', true);
+      },
+
+      _onDragOver: function(e) {
+        e.preventDefault();
+        return false
+      },
+
+      _onDragLeave: function(e) {
+        e.currentTarget.classList.toggle('over', false);
+      },
+
+      _onDrop: function(e) {
+        if (e.stopPropagation) 
+          e.stopPropagation();
+
+        if (e.preventDefault) 
+          e.preventDefault(); 
+
+        e.currentTarget.classList.toggle('over', false);
+        
+        
+        return false
+      },
+
+      _filterItem: function(node) {
+        return !this.excludedLocalNames[node.localName];
+      }
+    
+    });
+  </script>
+</dom-module>
+

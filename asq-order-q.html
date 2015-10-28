@@ -1,477 +1,85 @@
 <link rel="import" href="../polymer/polymer.html">
-
 <link rel="import" href="../asq-base/asq-base.html">
-<link rel="import" href="../asq-match/asq-match.html">
-<link rel="import" href="../paper-button/paper-button.html">
+
+<link rel="import" href="elements/asq-order-q-viewer.html">
+<link rel="import" href="elements/asq-order-q-presenter.html">
+
 
 <!--
-
-asq-order-q is a kind of ordering question type. It also can be used
-to define sorting questions.
-
-It has many usages, one of which is shown below. It is the basic usage.
-
-##### Examples
-
-      <asq-order-q objects="#objects" vertical layout>
-        <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
-        <img src="./cs1.png"></img>  
-
-        <div target name="words" horizontal layout></div>
-        <div id="objects" horizontal layout>
-          <div object name="schneit">schneit</div>
-          <div object name="und">und</div>
-          <div object name="kalt">kalt</div>
-          <div object name="es ist">es ist</div>
-        <div>
-      </asq-order-q>
-
-##### Anther example
-
-      <asq-order-q objects="#objects" vertical layout
-          hints solution='{und} {kalt} {es ist} {schneit}'
-          errorclass='error'>
-        <asq-stem><p>It is snowing and it is cold.</p></asq-stem>
-        <img src="./cs1.png"></img>  
-
-        <div target name="words" horizontal layout></div>
-        <div id="objects" horizontal layout>
-          <div object name="schneit">schneit</div>
-          <div object name="und">und</div>
-          <div object name="kalt">kalt</div>
-          <div object name="es ist">es ist</div>
-        <div>
-      </asq-order-q>
+xxxx
 
 
 @element asq-order-q
+@demo demo/index.html
 @group ASQ Elements
-@blurb ...
+@blurb ASQ order question.
 @homepage http://github.com/ASQ-USI-Elements/asq-order-q
 -->
-<polymer-element name="asq-order-q" attributes="mode targets objects solution hints errorclass">
+<dom-module id="asq-order-q">
+  <style>
+
+  </style>
   <template>
-    <style>
-      :host {
-        display: block;
-      }      
-    </style>
-    
-    <asq-match id="match" mode="{{mode}}" on-asq-match="{{onMatch}}"></asq-match>
-    <content id="stem" select="asq-stem" ></content>
-    <content id="items" select="*" ></content>
-    
+    <template is="dom-if" if="{{hasRole(role, roles.VIEWER)}}" restamp>
+      <asq-order-q-viewer
+        role="viewer" 
+        uid="[[uid]]"
+        disabled="{{disabled}}"
+        event-bus="[[eventBus]]">
+        <content></content>
+      </asq-order-q-viewer>
+    </template>
+
+    <template is="dom-if" if="{{hasRole(role, roles.PRESENTER)}}" restamp>
+      <asq-order-q-presenter
+        role="presenter" 
+        uid="[[uid]]"
+        disabled="{{disabled}}"
+        event-bus="[[eventBus]]">
+        <content></content>
+      </asq-order-q-presenter>
+    </template>
   </template>
-
   <script>
-  (function() {
 
+    Polymer({
+      is: 'asq-order-q',
 
-    var p = {
+      behaviors: [
+        ASQ.asqQuestionElementBehavior
+      ],
 
-      publish: {
+      properties: {
+        disabled: { 
+          type: Boolean,
+          value: false,
+          notify: true, 
+          reflectToAttribute: true
+        },
         /**
-         * Disable or endable the element. 
-         * 
-         * @attribute disabled
-         * @type boolean
-         * @default false
+         * Event bus to communicate with ASQ
          */
-        disabled: {value: false, reflect: true},
-      },
+        eventBus: {
+          type: Object,
+          notify: true
+        },
 
-      /**
-       * Specifies the attribute to be used for "selected" attribute.
-       *
-       * @attribute valueattr
-       * @type string
-       * @default 'name'
-       */
-      valueattr: 'name',
-
-      /**
-       * The element contains the **_target_**. If this is not set 
-       * `asq-order-q` is the container.
-       * @attribute targets
-       * @type string | object
-       */
-      targets: null,
-
-      /**
-       * The element contains all the **_object_**<sub>s</sub>. If this is not set 
-       * `asq-order-q` is the container.
-       *
-       *      objects="#objects"
-       *
-       * @attribute objects
-       * @type string | object
-       */
-      objects: null,
-
-      /**
-       * The event that would be fired from the **_object_**<sub>s</sub> to indicate
-       * it is being selected.
-       *
-       * @attribute activateEvent
-       * @type string
-       * @default 'tap'
-       */
-      activateEvent: 'tap',
-
-      mode: '1-m',
-
-      /**
-       * Denote whether do validation and hint for every input.
-       * If this attribute is true, then the `solution` attribute 
-       * is also expected.
-       * @attribute hints
-       * @type Boolean
-       */
-      hints: false,
-
-      /**
-       * Specify the name of class that will be add to target when
-       * attribute `hints` is true and the current input sequence 
-       * is not correct.
-       * @attribute errorclass
-       * @default 'error-solution'
-       * @type String
-       */
-      errorclass: 'error-solution',
-
-      /**
-       * Specify the solution of this question. It can be used to 
-       * with attribute `hints`. 
-       * The format is shown below.
-       *       
-       *      solution='{und} {kalt} {es ist} {schneit}' 
-       * 
-       * @attribute solution
-       * @type String
-       */
-      solution: '',
-
-      created: function(){
-        document.addEventListener('asq-ready', function(evt){
-          try {
-            this.subscribeToEvents(evt.detail.asqEventBus)
-          } catch(err){
-            console.debug('failed to subscribeToEvents');
-          }
-        }.bind(this));
-      },
-
-      onQuestionType: function(evt){
-        if(!evt || ! evt.questionType) return;
-
-        if(evt.questionType == 'asq-order-q'){
-          if(evt.type == "restorePresenter"){
-            if(this.role !== this.roles.PRESENTER) return;
-            this.onRestorePresenter(evt);
-          }
-          else if(evt.type == "restoreViewer"){
-            if(this.role !== this.roles.VIEWER) return;
-            this.onRestoreViewer(evt);
-          }
+        /**
+         * This property is used to specify the matches through a valid 
+         * JSON format string, which is exactlly the stringify string of
+         * `matches`, i.e. JSON.stringify(matches). An example is 
+         * like follows.
+         *
+         *      x.value='["xy", "xz", "yz"]'
+         *      
+         */
+        value: {
+          type: String,
+          value: '{}'
         }
-      },
-
-      onRestorePresenter: function(evt){
-
-      },
-
-      onRestoreViewer: function(evt){
-        evt.questions.forEach(function(q){
-          console.log(q)
-          if(q.uid != this.uid) return;
-          this.setOrders(q.orders);
-        }.bind(this));
-      },
-
-      subscribeToEvents: function(eventBus){
-        eventBus.on('asq:question_type', this.onQuestionType.bind(this));
-      },
-
-      setOrders: function(orders) {
-        if ( typeof orders === 'undefined' || !orders ) return;
-        for ( var value of orders ) {
-          this.match(this.getTarget(), value);
-        }
-      },
-
-
-      disabledChanged: function() {
-        if ( this.disabled ) {
-          for ( var object of this.getUnmatchedObjects() ) {
-            this.removeListener(object);
-          }
-          for ( var object of this.getMatchedObjectsOfTarget(this.getTarget()) ) {
-            this.removeListener(object);
-          }
-
-        } else {
-          for ( var object of this.getUnmatchedObjects() ) {
-            this.addListener(object);
-          }
-          for ( var object of this.getMatchedObjectsOfTarget(this.getTarget()) ) {
-            this.addListener(object);
-          }
-        }
-      },
-
-      ready: function() {
-        this.activateListener = this.onObjectTap.bind(this);
-        this.targetObserver = new MutationObserver(this.updateTarget.bind(this));
-        this.objectsObserver = new MutationObserver(this.updateObjects.bind(this));
-
-        if (!this.targets) this.targets = this;
-        if (!this.objects) this.objects = this;
-      },
-
-      // Observer function that handle the changes of dom in **_target_**`. 
-      // This mostly happens when new objects are inserted as children 
-      // of **_target_**`, i.e. target and object become matched.  
-      // In this case, if attribute `hints` are true, then it will try 
-      // to validate the input so far.
-      updateTarget: function() {
-        if ( !this.hints ) return;
-
-        if ( !this.validate() ) {
-          this.showHints();
-        } else {
-          this.hideHints();
-        }
-      },
-
-      // show some tips when input sequence is not correct.
-      showHints: function() {
-        var errorClass = !this.errorclass ? 'error-solution' : this.errorclass;
-        this.getTarget().classList.add(errorClass);
-      },
-
-      // hide tips when input sequence becomes correct.
-      hideHints: function() {
-        var errorClass = !this.errorclass ? 'error-solution' : this.errorclass;
-        this.getTarget().classList.remove(errorClass);
-      },
-
-      updateObjects: function() {
-        for (var x of this.getUnmatchedObjects()) {
-          this.removeListener(x);
-          this.addListener(x);
-        }
-      },
-
-
-      targetsChanged: function(old) {
-        if (old && typeof old === "object") {
-          this.removeListener(old);
-          this.targetObserver.disconnect();
-        }
-        if (!this.targets) this.targets = this;
-        if ( typeof this.targets === "string" ) {
-          var targets = this.parentNode.querySelector(this.targets);
-          if ( targets ) this.targets = targets;
-          else this.targets = this;
-        }
-        this.targetObserver.observe(this.getTarget(), {childList: true}); 
-        
-      },
-
-      objectsChanged: function(old) {
-        if (old && typeof old === "object") {
-          this.removeListener(old);
-          this.objectsObserver.disconnect();
-        }
-        if (!this.objects) this.objects = this;
-        if ( typeof this.objects === "string") {
-          var objects = this.parentNode.querySelector(this.objects);
-
-          if ( objects ) this.objects = objects;
-          else this.objects = this;
-        } 
-        this.objectsObserver.observe(this.objects, {childList: true});
-
-
-        for (var x of this.getUnmatchedObjects()) {
-          this.addListener(x);
-        }
-      },
-
-      addListener: function(node) {
-        Polymer.addEventListener(node, this.activateEvent, this.activateListener);
-      },
-
-      removeListener: function(node) {
-        Polymer.removeEventListener(node, this.activateEvent, this.activateListener);
-      },
-
-      // Event handler for **_object_**<sub>s</sub>.
-      onObjectTap: function(e) {
-        var object = e.currentTarget;
-        if ( !object ) return;          
-        this.match(this.getTarget(), object);
-      },
-
-      // Compare the current sequence with solution. Return true if 
-      // current sequence is matched by solution.
-      validate: function() {
-        var sequence = this.getMatchedObjectsSequence();
-        var solution = this.parseSolution();
-
-        return solution.toString().indexOf(sequence).toString() == 0 ? true : false;
-      },
-
-      //It is quite similar with method `getMatchedObjects` but it returns
-      // an array of `value-attrs` strings rather than an array of objects.
-      getMatchedObjectsSequence: function() {
-        var sequence = this.getMatchedObjectsOfTarget(this.getTarget());
-        for (var i=0; i<sequence.length; i++) {
-          sequence[i] = sequence[i].getAttribute(this.valueattr);
-        }
-        return sequence;
-      },
-
-      // parse the solution string into an array of strings 
-      parseSolution: function() {
-        var solution = [];
-        var temp = this.solution.trim().split('}');
-
-        for ( var x of temp ) {
-          if ( x && x.length > 0) {
-            var index = x.indexOf('{');
-            solution.push(x.slice(index+1));
-          }
-        }
-        return solution;
-      },
-
-      // Important event handler that listens for `asq-match` event.
-      // When received an event, it will either add an object into the target
-      // or move an object back to `objects`, i.e. make the object `unmatched`
-      onMatch: function(e) {
-        var target = this.getTarget().getAttribute(this.valueattr) == e.detail.key ?
-                    this.getTarget() : undefined;
-        var object = this.findObjecttByAttribute(e.detail.value);
-
-        if ( !target || !object ) {
-          return
-        }
-
-        if ( e.detail.isMatch ) {
-          target.appendChild(object);
-        } else {
-          this.objects.appendChild(object);
-        }
-
-      },
-
-      // Check if (k, v) pair exists. 
-      isMatch: function(k, v) {
-        return this.$.match.isMatch(k.getAttribute(this.valueattr), 
-          v.getAttribute(this.valueattr));
-      },
-
-      /**
-       * Set up a match between target and object
-       * @method match
-       * @param  {Object} k target
-       * @param  {Object} v object
-       */
-      match: function(target, object) {
-
-        k =  typeof target === 'object' ? 
-            target.getAttribute(this.valueattr) : target;
-        v = typeof object === 'object' ? 
-            object.getAttribute(this.valueattr) : object;
-        
-        this.$.match.match(k, v);
-      },
-
-      // Find the object by the given attribute
-      findObjecttByAttribute: function(attr) {
-        for ( var object of this.getUnmatchedObjects() ) {
-          if ( object.getAttribute(this.valueattr) == attr) {
-            return object;
-          }
-        }
-
-        var target = this.getTarget();
-        for ( var object of this.getMatchedObjectsOfTarget(target) ) {
-          if ( object.getAttribute(this.valueattr) == attr) {
-            return object;
-          }
-        }
-        return null;
-      },
-
-      // Return all the objects inside a target
-      getMatchedObjectsOfTarget: function(target) {
-        return target.querySelectorAll('[object]').array();
-      },
-
-      // Get the (unique, in this case) target.
-      getTarget: function() {
-        return this.querySelector('[target]');
-      },
-
-      /**
-       * Get all unmatched objects.
-       * @method getUnmatchedObjects 
-       * @return {array} UnmatchedObjects
-       */
-      getUnmatchedObjects: function() {
-        var objects = this.objects.querySelectorAll('[object]');
-        return objects.array().reverse();
-      },
-
-      // Just for debug purpose. 
-      // Print out the matches.
-      prettyPrint: function() {
-        var matches = this.$.match.getMatches();
-        console.log('- - - - match', matches.length, ' - - - -');
-        matches.forEach(function(m, index){
-          console.log('  ', index, ' : ' , m.key, m.value);
-        });
-        console.log('\n');
-      },
-
-      /**
-       * The `submit` method returns an object that respresents the submission of this question. The object has the following structure:
-
-           {
-              questionUid: this.uid, 
-              timestamp: new Date(),
-
-              // Array of the result of submit() called for each option of the question
-              submission: [] 
-           }
-       * Only enabled when the `role` of the element is <b>viewer</b>.
-       *
-       * @method submit
-       */
-      submit: function() {
-        if ( this.role !== this.roles.VIEWER ) {
-          return;
-        }
-
-        var submission = this.$.match.getMatches();
-        if ( submission.length > 0 ) {
-          submission = submission[0].value
-        }
-
-        return {
-          questionUid: this.uid,
-          timestamp: new Date(),
-          submission: submission
-        };
       }
-
-    }
-
-    ASQ.asqify(p, true);
-    Polymer('asq-order-q', p);
-
-  })();
+    
+    });
   </script>
-</polymer-element>
+</dom-module>
+

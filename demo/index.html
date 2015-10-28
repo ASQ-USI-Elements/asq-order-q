@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="asq-elements" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  <title>asq-order-q</title>
+
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+
+  <link href="../asq-order-q.html" rel="import">
+  
+
+
+  <style is="custom-style">
+    body{
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    
+    div[label] {
+      padding: 6px 12px;
+      margin-bottom: 0;
+      font-size: 14px;
+      font-weight: normal;
+      line-height: 1.42857143;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      -ms-touch-action: manipulation;
+          touch-action: manipulation;
+      cursor: pointer;
+      -webkit-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+      background-image: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+
+      margin: 1px;
+
+      display: inline-block;
+
+    }
+
+    [label].static {
+      color: #fff;
+      background-color: #337ab7;
+      border-color: #2e6da4;
+    }
+    [label].static:focus,
+    [label].static.focus {
+      color: #fff;
+      background-color: #286090;
+      border-color: #122b40;
+
+    }
+    [label].static:hover {
+      color: #fff;
+      background-color: #286090;
+      border-color: #204d74;
+    }
+
+  </style>
+
+</head>
+<body>
+  <p>hello</p>
+    <asq-order-q>
+      <div label class="static" name="hi">hi</div>
+      <div label class="static" name="ghouan">ghouan</div>
+      <div label class="static" name="nani">nani</div>
+    </asq-order-q>
+
+
+
+
+
+  <script>
+    var x = document.querySelector('asq-order-q');
+  </script>
+</body>
+</html>
