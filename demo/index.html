@@ -16,6 +16,7 @@
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
     
+    
     div[label] {
       padding: 6px 12px;
       margin-bottom: 0;
@@ -42,17 +43,20 @@
 
     }
 
+    div[label].dragging {
+      opacity: 0.6;
+    }
+
+    div[label].over {
+      border: 1px dashed #000;
+      opacity: 0.6;
+      @apply(--shadow-elevation-3dp);
+    }
+
     [label].static {
       color: #fff;
       background-color: #337ab7;
       border-color: #2e6da4;
-    }
-    [label].static:focus,
-    [label].static.focus {
-      color: #fff;
-      background-color: #286090;
-      border-color: #122b40;
-
     }
     [label].static:hover {
       color: #fff;
@@ -64,15 +68,13 @@
 
 </head>
 <body>
-  <p>hello</p>
-    <asq-order-q>
-      <div label class="static" name="hi">hi</div>
-      <div label class="static" name="ghouan">ghouan</div>
-      <div label class="static" name="nani">nani</div>
-    </asq-order-q>
-
-
-
+  <p>Give the order of Polymer Lifecycle methods.</p>
+  <asq-order-q>
+    <div label class="static" name="ready">ready</div>
+    <div label class="static" name="attached">attached</div>
+    <div label class="static" name="created">created</div>
+    <div label class="static" name="detached">detached</div>
+  </asq-order-q>
 
 
   <script>

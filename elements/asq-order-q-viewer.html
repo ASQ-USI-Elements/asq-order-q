@@ -69,17 +69,21 @@
         },
 
         /**
-         * This property is used to specify the matches through a valid 
-         * JSON format string, which is exactlly the stringify string of
-         * `matches`, i.e. JSON.stringify(matches). An example is 
-         * like follows.
-         *
-         *      x.value='["xy", "xz", "yz"]'
-         *      
+         * The class added when dragging an item.
          */
-        value: {
+        onDraggingClass: {
           type: String,
-          value: '{}'
+          value: 'dragging',
+          notify: true
+        },
+
+        /**
+         * The class added to an item when there 
+         * is another item which is over it.
+         */
+        overClass: {
+          type: String,
+          value: 'over'
         },
 
         disabled: { 
@@ -127,9 +131,9 @@
       _initItems: function() {
         // drop
         this.items.forEach(function(x) {
-          x.addEventListener('dragenter', this._onDragEnter);
-          x.addEventListener('dragleave', this._onDragLeave);
-          x.addEventListener('dragover', this._onDragOver);
+          x.addEventListener('dragenter', this._onDragEnter.bind(this));
+          x.addEventListener('dragleave', this._onDragLeave.bind(this));
+          x.addEventListener('dragover', this._onDragOver.bind(this));
           x.addEventListener('drop', this._onDrop.bind(this));
         }, this);
 
@@ -154,9 +158,10 @@
         if ( this.onDraggingClass ) 
           e.currentTarget.classList.toggle(this.onDraggingClass, true);
 
+        var data = this._valueForItem(e.currentTarget);
         
         e.dataTransfer.dropEffect = 'move';
-
+        e.dataTransfer.setData('Text', data);
       },
 
       _onDragEnd: function(e) {
@@ -169,7 +174,7 @@
         if (e.preventDefault) {
           e.preventDefault(); 
         }
-        e.currentTarget.classList.toggle('over', true);
+        e.currentTarget.classList.toggle(this.overClass, true);
       },
 
       _onDragOver: function(e) {
@@ -178,7 +183,7 @@
       },
 
       _onDragLeave: function(e) {
-        e.currentTarget.classList.toggle('over', false);
+        e.currentTarget.classList.toggle(this.overClass, false);
       },
 
       _onDrop: function(e) {
@@ -188,15 +193,100 @@
         if (e.preventDefault) 
           e.preventDefault(); 
 
-        e.currentTarget.classList.toggle('over', false);
+        e.currentTarget.classList.toggle(this.overClass, false);
         
+        var droppingTarget = this._valueForItem(e.currentTarget);
+        var draggingItem = e.dataTransfer.getData('Text');
         
+        this.swap(draggingItem, droppingTarget);
+
         return false
+      },
+
+      /**
+       * Swap two items.
+       * 
+       * @return {[type]}   [description]
+       */
+      swap: function(x, y) {
+        var xItem = this._valueToItem(x);
+        var yItem = this._valueToItem(y);
+
+        if ( !xItem || !yItem ) return;
+        
+        xSibling = xItem.nextSibling;
+        ySibling = yItem.nextSibling;
+
+        if ( xSibling ) {
+          xItem.parentNode.insertBefore(yItem, xSibling);
+        } else {
+          xItem.parentNode.appendChild(yItem);
+        }
+
+        if ( ySibling ) {
+          yItem.parentNode.insertBefore(xItem, ySibling);
+        } else {
+          yItem.parentNode.appendChild(xItem);
+        }
+      },
+
+      get value() {
+        return JSON.stringify(this._itemNames);
+      },
+
+      set value(value) {
+        try {
+          this.validate(value);
+          var items = JSON.parse(value);
+          for ( var i = 0, item; item = items[i]; i++) {
+            if ( this._itemNames[i] !== item ) {
+              this.swap(this._itemNames[i], item);
+            }
+          }
+        } catch (e) {
+          throw e
+        }
+      },
+
+      get _itemNames() {
+        return [].slice.call(this.items).map(function(item) {
+          return item.getAttribute(this.attrForSorted)
+        }, this);
+      },
+
+      validate: function(value) {
+        var items = JSON.parse(value);
+        if ( this.items.length !== items.length )
+          throw 'Invalid value: ' + value; 
+
+        var count = {};
+        items.forEach(function(item, index){
+          if ( count[item] || this._itemNames.indexOf(item) < 0) {
+            throw 'Invalid value: ' + value;
+          } else {
+            count[item] = true;
+          }
+        }, this);
       },
 
       _filterItem: function(node) {
         return !this.excludedLocalNames[node.localName];
+      },
+
+      _valueForItem: function(item) {
+        if ( this.attrForSorted ) 
+          return item.getAttribute(this.attrForSorted);
+        else 
+          return item.textContent;
+      },
+
+      _valueToItem: function(value) {
+      for (var i = 0, item; item = this.items[i]; i++) {
+        if (this._valueForItem(item) == value) {
+          return item;
+        }
       }
+    },
     
     });
   </script>
