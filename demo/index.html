@@ -64,12 +64,27 @@
       border-color: #204d74;
     }
 
+    div[label].asq-disabled {
+      color: white;
+      background-color: #4C4C4C;
+      border-color: #4C4C4C;
+      cursor: auto;
+    }
+
+    div[label].asq-disabled:hover,
+    div[label].asq-disabled:focus  {
+      color: white;
+      background-color: #4C4C4C;
+      border-color: #4C4C4C;
+      cursor: auto;
+    }
+
   </style>
 
 </head>
 <body>
-  <p>Give the order of Polymer Lifecycle methods.</p>
-  <asq-order-q>
+  <p>Specify the order of Polymer lifecycle methods.</p>
+  <asq-order-q sortable="[label]" role="presenter">
     <div label class="static" name="ready">ready</div>
     <div label class="static" name="attached">attached</div>
     <div label class="static" name="created">created</div>
@@ -79,6 +94,22 @@
 
   <script>
     var x = document.querySelector('asq-order-q');
+    var y = x.$$('asq-order-q-presenter')
+
+    var submissions = [
+      {
+        submission: ["ready","attached","created","detached"]
+      },
+      {
+        submission: ["ready","created","detached", "attached"]
+      },
+      {
+        submission: ["created","detached", "ready", "attached"]
+      },
+      {
+        submission: ["detached", "created", "attached", "ready"]
+      }
+    ];
   </script>
 </body>
 </html>

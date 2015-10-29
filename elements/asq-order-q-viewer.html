@@ -90,6 +90,7 @@
           type: Boolean,
           value: false,
           notify: true, 
+          observer: '_disabledChanged',
           reflectToAttribute: true
         },
 
@@ -115,12 +116,13 @@
               'template': 1
             };
           }
-        },
+        }
       },
 
       attached: function() {
         this.async(function() {
           this._initItems();
+          this._setDisabled(this.disabled);
         })
       },
 
@@ -146,11 +148,26 @@
       },
 
       _disabledChanged: function(disabled) {
-        
+        this._setDisabled(disabled);
+      },
+
+      _setDisabled: function(disabled) {
+        this.items.forEach(function(item) {
+          item.disabled = this.disabled;
+          item.classList.toggle(this.disabledClass, this.disabled);
+          item.setAttribute('draggable', !this.disabled);
+        }, this);
       },
 
       get items() {
         var nodes = Polymer.dom(this).queryDistributedElements(this.sortable || '*');
+        if ( nodes && nodes.length > 0 ) {
+          // TODO: zhenfei
+          // We need to have the items in the document order;
+          // The `Polymer.dom(this.parentNode).querySelectorAll(this.sortable || '*')` 
+          // should had worked, but it doesn't. It returns items in same order all the time.
+          nodes = nodes[0].parentNode.childNodes;
+        }
         return Array.prototype.filter.call(nodes, this._bindFilterItem);
       },
 
@@ -270,7 +287,7 @@
       },
 
       _filterItem: function(node) {
-        return !this.excludedLocalNames[node.localName];
+        return !this.excludedLocalNames[node.localName] && node.nodeType === 1;
       },
 
       _valueForItem: function(item) {
@@ -281,12 +298,48 @@
       },
 
       _valueToItem: function(value) {
-      for (var i = 0, item; item = this.items[i]; i++) {
-        if (this._valueForItem(item) == value) {
-          return item;
+        for (var i = 0, item; item = this.items[i]; i++) {
+          if (this._valueForItem(item) == value) {
+            return item;
+          }
         }
+      },
+
+      submit: function() {
+        if ( ! this.hasRole(this.role, this.roles.VIEWER) ) {
+          return;
+        }
+
+        return {
+          questionUid: this.uid,
+          timestamp: new Date(),
+          submission: this._itemNames
+        }
+      },
+
+      _onQuestionType: function (evt) {
+        if (!evt || !evt.questionType)
+          return;
+        if (evt.questionType == 'asq-order-q') {
+          if (evt.type == 'restoreViewer') {
+            this._onRestoreViewer(evt);
+          }
+        }
+      },
+
+      _onRestoreViewer: function (evt) {
+        evt.questions.forEach(function (q) {
+          if (q.uid != this.uid)
+            return;
+          this.value = JSON.stringify(q.matches);
+        }.bind(this));
+      },
+
+      _eventBusChanged: function (eventBus) {
+        if(!eventBus) return;
+        eventBus.on('asq:question_type', this._onQuestionType.bind(this));
       }
-    },
+
     
     });
   </script>

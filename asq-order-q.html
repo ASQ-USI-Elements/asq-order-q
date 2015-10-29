@@ -25,7 +25,15 @@ xxxx
         role="viewer" 
         uid="[[uid]]"
         disabled="{{disabled}}"
-        event-bus="[[eventBus]]">
+        event-bus="[[eventBus]]"
+        sortable="[[sortable]]"
+        attr-for-sorted="[[attrForSorted]]"
+        sorted-class="[[sortedClass]]"
+        sorted-attribute="[[sortedAttribute]]"
+        disabled-class="[[disabledClass]]"
+        on-dragging-class="[[onDraggingClass]]"
+        over-class="[[overClass]]"
+        excluded-local-names="[[excludedLocalNames]]">
         <content></content>
       </asq-order-q-viewer>
     </template>
@@ -35,7 +43,15 @@ xxxx
         role="presenter" 
         uid="[[uid]]"
         disabled="{{disabled}}"
-        event-bus="[[eventBus]]">
+        event-bus="[[eventBus]]"
+        sortable="[[sortable]]"
+        attr-for-sorted="[[attrForSorted]]"
+        sorted-class="[[sortedClass]]"
+        sorted-attribute="[[sortedAttribute]]"
+        disabled-class="[[disabledClass]]"
+        on-dragging-class="[[onDraggingClass]]"
+        over-class="[[overClass]]"
+        excluded-local-names="[[excludedLocalNames]]">
         <content></content>
       </asq-order-q-presenter>
     </template>
@@ -65,17 +81,122 @@ xxxx
         },
 
         /**
-         * This property is used to specify the matches through a valid 
-         * JSON format string, which is exactlly the stringify string of
-         * `matches`, i.e. JSON.stringify(matches). An example is 
-         * like follows.
+         * 
+         * This is a CSS selector string. Define the items to be
+         * sorted.
          *
-         *      x.value='["xy", "xz", "yz"]'
-         *      
          */
-        value: {
+        sortable: String,
+
+        /**
+         * 
+         * The unique attribute value of elements to be 
+         * sorted.
+         *
+         * @attribute attrForSorted
+         * @type {string}
+         */
+        attrForSorted: {
           type: String,
-          value: '{}'
+          value: 'name'
+        },
+
+        /**
+         * 
+         * The class to set on elements when matched.
+         *
+         * @attribute sortedClass
+         * @type {string}
+         */
+        sortedClass: {
+          type: String,
+          value: 'asq-sorted'
+        },
+
+        /**
+         * 
+         * The attribute to set on elements when sorted.
+         *
+         * @attribute sortedAttribute
+         * @type {string}
+         */
+        sortedAttribute: {
+          type: String,
+          value: null
+        },
+
+        disabledClass: {
+          type: String,
+          value: 'asq-disabled'
+        },
+
+        /**
+         * The class added when dragging an item.
+         */
+        onDraggingClass: {
+          type: String,
+          value: 'dragging',
+          notify: true
+        },
+
+        /**
+         * The class added to an item when there 
+         * is another item which is over it.
+         */
+        overClass: {
+          type: String,
+          value: 'over'
+        },
+
+        /**
+         * The set of excluded elements where the key is the `localName` 
+         * of the element that will be ignored from the item list.
+         *
+         * @type {object}
+         * @default {template: 1}
+         */
+        excludedLocalNames: {
+          type: Object,
+          value: function() {
+            return {
+              'template': 1
+            };
+          }
+        }
+
+      },
+
+      get _api() {
+        return this.$$('asq-order-q-' + this.role);
+      },
+
+      get value() {
+        return this._api.value;
+      },
+
+      set value(value) {
+        this._api.value = value;
+      },
+
+      /**
+       * Collect answers from inner `asq-option`s and orgnize them 
+       * into an object.
+       *
+
+        {
+          questionUid: this.uid,
+          timestamp: new Date(),
+          matches: <matches>
+        }
+
+       */
+      submit: function () {
+        if (this.role == this.roles.VIEWER) {
+          var el = this.$$('asq-order-q-viewer');
+          if (!el) {
+            throw new Error('submit(): expected asq-css-select-q-viewer element to exist');
+          }
+          return el.submit();
         }
       }
     
