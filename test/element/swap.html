@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="asq" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>asq-order-q</title>
+
+  <script src="../../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../../web-component-tester/browser.js"></script>
+
+  <!-- Step 1: import the element to test -->
+  <link rel="import" href="../../asq-order-q.html">
+</head>
+<body>
+
+  <!-- You use the document as a place to set up your fixtures. -->
+  <asq-order-q id="m" sortable="[label]">
+    <div label name="a">a</div>
+    <div label name="b">b</div>
+    <div label name="c">c</div>
+    <div label name="d">d</div>
+  </asq-order-q>
+
+  <script>
+    var m = document.querySelector('#m');
+    suite('<asq-order-q>', function() {
+      test('test default values', function() {
+        assert.isTrue(m.isASQElement);
+        assert.isTrue(m.isASQQuestionTypeElement);
+        assert.equal(m.uid, '');
+        assert.equal(m.role, 'viewer');
+      });
+
+      var s = [];
+      s.push('["a","b","c","d"]');
+      s.push('["a","c","d","b"]');
+      s.push('["c","d","b","a"]');
+      s.push('["d","c","a","b"]');
+
+      test('test `value` property', function() {
+        assert.equal(m._api.value, s[0]);
+        assert.equal(m.value, s[0]);
+        assert.equal(JSON.stringify(m._api._itemNames), s[0]);
+      });
+
+      test('test `swap` function', function() {
+        var ss = '["b","a","c","d"]';
+        m._api.swap('a', 'b');
+        assert.equal(m._api.value, ss);
+        assert.equal(m.value, ss);
+        assert.equal(JSON.stringify(m._api._itemNames), ss);
+
+        ss = '["b","d","c","a"]';
+        m._api.swap('a', 'd');
+        assert.equal(m._api.value, ss);
+        assert.equal(m.value, ss);
+        assert.equal(JSON.stringify(m._api._itemNames), ss);
+
+        m._api.swap('a', 'a');
+        assert.equal(m._api.value, ss);
+        assert.equal(m.value, ss);
+        assert.equal(JSON.stringify(m._api._itemNames), ss);
+
+        ss = '["a","c","d","b"]';
+        m._api.swap('c', 'd');
+        m._api.swap('a', 'b');
+        assert.equal(m._api.value, ss);
+        assert.equal(m.value, ss);
+        assert.equal(JSON.stringify(m._api._itemNames), ss);
+      });
+
+      
+    });
+  </script>
+
+</body>
+</html>
