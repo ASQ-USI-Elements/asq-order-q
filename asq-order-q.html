@@ -198,7 +198,13 @@ xxxx
           }
           return el.submit();
         }
-      }
+      },
+
+      created: function () {
+        document.addEventListener('asq-ready', function (evt) {
+          this.eventBus = evt.detail.asqEventBus
+        }.bind(this));
+      },
     
     });
   </script>
