@@ -273,6 +273,9 @@
       },
 
       validate: function(value) {
+        if ( typeof value === 'undefined' || value === null ) 
+          throw 'Invalid value: ' + value;
+
         var items = JSON.parse(value);
         if ( this.items.length !== items.length )
           throw 'Invalid value: ' + value; 
@@ -319,20 +322,22 @@
       },
 
       _onQuestionType: function (evt) {
-        if (!evt || !evt.questionType)
-          return;
+        if (!evt || !evt.questionType) return;
         if (evt.questionType == 'asq-order-q') {
           if (evt.type == 'restoreViewer') {
-            this._onRestoreViewer(evt);
+            // use async
+            this.async(function() {
+              this._onRestoreViewer(evt);
+            })
           }
         }
       },
 
       _onRestoreViewer: function (evt) {
+        if (this.items.length === 0) return;
         evt.questions.forEach(function (q) {
-          if (q.uid != this.uid)
-            return;
-          this.value = JSON.stringify(q.matches);
+          if (q.uid != this.uid) return;
+          this.value = JSON.stringify(q.orders);
         }.bind(this));
       },
 
