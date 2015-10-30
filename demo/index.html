@@ -17,67 +17,66 @@
     }
     
     
-    div[label] {
+    asq-order-q > div[label] {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 120px;
+      height: 40px;
       padding: 6px 12px;
       margin-bottom: 0;
-      font-size: 14px;
+      font-size: 20px;
       font-weight: normal;
       line-height: 1.42857143;
       text-align: center;
       white-space: nowrap;
       vertical-align: middle;
-      -ms-touch-action: manipulation;
-          touch-action: manipulation;
+      touch-action: manipulation;
       cursor: pointer;
-      -webkit-user-select: none;
-         -moz-user-select: none;
-          -ms-user-select: none;
-              user-select: none;
       background-image: none;
       border: 1px solid transparent;
       border-radius: 4px;
-
-      margin: 1px;
-
-      display: inline-block;
-
+      margin: 10px;
     }
 
-    div[label].dragging {
+    asq-order-q > div[label].dragging {
       opacity: 0.6;
     }
 
-    div[label].over {
+    asq-order-q > div[label].over {
       border: 1px dashed #000;
       opacity: 0.6;
       @apply(--shadow-elevation-3dp);
     }
 
-    [label].static {
+    asq-order-q >[label].static {
       color: #fff;
       background-color: #337ab7;
       border-color: #2e6da4;
     }
-    [label].static:hover {
+
+    asq-order-q >[label].static:hover {
       color: #fff;
       background-color: #286090;
       border-color: #204d74;
     }
 
-    div[label].asq-disabled {
+    asq-order-q > div[label].asq-disabled {
       color: white;
       background-color: #4C4C4C;
       border-color: #4C4C4C;
       cursor: auto;
     }
 
-    div[label].asq-disabled:hover,
-    div[label].asq-disabled:focus  {
+    asq-order-q > div[label].asq-disabled:hover,
+    asq-order-q > div[label].asq-disabled:focus  {
       color: white;
       background-color: #4C4C4C;
       border-color: #4C4C4C;
       cursor: auto;
     }
+
 
   </style>
 
