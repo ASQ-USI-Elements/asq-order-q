@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="asq-elements" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  <title>asq-order-q</title>
+
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+
+  <link href="../asq-order-q.html" rel="import">
+  
+
+
+  <style is="custom-style">
+    body{
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    
+    
+    asq-order-q > div[label] {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 120px;
+      height: 40px;
+      padding: 6px 12px;
+      margin-bottom: 0;
+      font-size: 20px;
+      font-weight: normal;
+      line-height: 1.42857143;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      touch-action: manipulation;
+      cursor: pointer;
+      background-image: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      margin: 10px;
+    }
+
+    asq-order-q > div[label].dragging {
+      opacity: 0.6;
+    }
+
+    asq-order-q > div[label].over {
+      border: 1px dashed #000;
+      opacity: 0.6;
+      @apply(--shadow-elevation-3dp);
+    }
+
+    asq-order-q >[label].static {
+      color: #fff;
+      background-color: #337ab7;
+      border-color: #2e6da4;
+    }
+
+    asq-order-q >[label].static:hover {
+      color: #fff;
+      background-color: #286090;
+      border-color: #204d74;
+    }
+
+    asq-order-q > div[label].asq-disabled {
+      color: white;
+      background-color: #4C4C4C;
+      border-color: #4C4C4C;
+      cursor: auto;
+    }
+
+    asq-order-q > div[label].asq-disabled:hover,
+    asq-order-q > div[label].asq-disabled:focus  {
+      color: white;
+      background-color: #4C4C4C;
+      border-color: #4C4C4C;
+      cursor: auto;
+    }
+
+
+  </style>
+
+</head>
+<body>
+  <p>Specify the order of Polymer lifecycle methods.</p>
+  <asq-order-q sortable="[label]" role="presenter">
+    <div label class="static" name="ready">ready</div>
+    <div label class="static" name="attached">attached</div>
+    <div label class="static" name="created">created</div>
+    <div label class="static" name="detached">detached</div>
+  </asq-order-q>
+
+
+  <script>
+    var x = document.querySelector('asq-order-q');
+    var y = x.$$('asq-order-q-presenter')
+
+    var submissions = [
+      {
+        submission: ["ready","attached","created","detached"]
+      },
+      {
+        submission: ["ready","created","detached", "attached"]
+      },
+      {
+        submission: ["created","detached", "ready", "attached"]
+      },
+      {
+        submission: ["detached", "created", "attached", "ready"]
+      }
+    ];
+  </script>
+</body>
+</html>

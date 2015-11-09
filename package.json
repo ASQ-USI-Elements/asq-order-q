@@ -1,6 +1,6 @@
 {
   "name": "asq-order-q",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "ASQ order question type element",
   "main": "index.js",
   "repository": {
@@ -10,9 +10,9 @@
   "dependencies": {
     "asq-plugin": "ASQ-USI/asq-plugin",
     "bluebird": "^2.9.7",
+    "bson-objectid": "^1.1.1",
     "cheerio": "^0.18.0",
-    "lodash": "^3.2.0",
-    "mongoose": "^4.0.5"
+    "lodash": "^3.10.1"
   },
   "devDependencies": {
     "chai": "^2.0.0",

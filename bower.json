@@ -1,6 +1,6 @@
 {
   "name": "asq-order-q",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "https://github.com/ASQ-USI-Elements/asq-order-q",
   "authors": [
     "Vasileios Triglianos <triglian@gmail.com>",
@@ -12,13 +12,24 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.1",
-    "paper-button": "Polymer/paper-button#^0.5.2",
-    "asq-base": "ASQ-USI-Elements/asq-base#master",
-    "asq-match": "ASQ-USI-Elements/asq-match#master"
-
+    "polymer": "Polymer/Polymer#~1.1.3",
+    "asq-base": "ASQ-USI-Elements/asq-base#feat-polymer-1",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#~1.0.2",
+    "paper-styles": "PolymerElements/paper-styles#~1.0.11",
+    "paper-drawer-panel": "PolymerElements/paper-drawer-panel#~1.0.3",
+    "iron-list": "polymerelements/iron-list#~1.1.2",
+    "paper-item": "PolymerElements/paper-item#~1.0.3",
+    "paper-tabs": "polymerelements/paper-tabs#~1.0.3",
+    "iron-component-page": "PolymerElements/iron-component-page#~1.0.5"
   },
-  "ignore": [ "index.js", "lib", "package.json", "node_modules", ".npmignore", "test/server"],
+  "ignore": [
+    "index.js",
+    "lib",
+    "package.json",
+    "node_modules",
+    ".npmignore",
+    "test/server"
+  ],
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^2.0.0-rc1"
   }
