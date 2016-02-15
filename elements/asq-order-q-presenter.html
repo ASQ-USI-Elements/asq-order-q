@@ -242,24 +242,53 @@
         })
       },
 
+      detached: function() {
+        this.async(function() {
+          this._cleanupItems();
+        })
+      },
+
       created: function() {
+        this._onDragEnterBinded =  this._onDragEnter.bind(this);
+        this._onDragLeaveBinded = this._onDragLeave.bind(this);
+        this._onDragOverBinded = this._onDragOver.bind(this);
+        this._onDropBinded = this._onDrop.bind(this);
+        this._onDragStartBinded = this._onDragStart.bind(this);
+        this._onDragEndBinded = this._onDragEnd.bind(this);
         this._bindFilterItem = this._filterItem.bind(this);
       },
 
       _initItems: function() {
         // drop
         this.items.forEach(function(x) {
-          x.addEventListener('dragenter', this._onDragEnter.bind(this));
-          x.addEventListener('dragleave', this._onDragLeave.bind(this));
-          x.addEventListener('dragover', this._onDragOver.bind(this));
-          x.addEventListener('drop', this._onDrop.bind(this));
+          x.addEventListener('dragenter', this._onDragEnterBinded);
+          x.addEventListener('dragleave', this._onDragLeaveBinded);
+          x.addEventListener('dragover', this._onDragOverBinded);
+          x.addEventListener('drop', this._onDropBinded);
         }, this);
 
         // drag
         this.items.forEach(function(y) {
           y.setAttribute('draggable', true);
-          y.addEventListener('dragstart', this._onDragStart.bind(this));
-          y.addEventListener('dragend', this._onDragEnd.bind(this));
+          y.addEventListener('dragstart', this._onDragStartBinded);
+          y.addEventListener('dragend', this._onDragEndBinded);
+        }, this);
+      },
+
+      _cleanupItems: function() {
+        // drop
+        this.items.forEach(function(x) {
+          x.removeEventListener('dragenter', this._onDragEnterBinded);
+          x.removeEventListener('dragleave', this._onDragLeaveBinded);
+          x.removeEventListener('dragover', this._onDragOverBinded);
+          x.removeEventListener('drop', this._onDropBinded);
+        }, this);
+
+        // drag
+        this.items.forEach(function(y) {
+          y.setAttribute('draggable', false);
+          y.removeEventListener('dragstart', this._onDragStartBinded);
+          y.removeEventListener('dragend', this._onDragEndBinded);
         }, this);
       },
 
