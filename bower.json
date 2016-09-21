@@ -17,7 +17,7 @@
     "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0.5",
     "paper-styles": "PolymerElements/paper-styles#^1.0.12",
     "paper-drawer-panel": "PolymerElements/paper-drawer-panel#^1.0.4",
-    "iron-list": "polymerElements/iron-list#^1.1.5",
+    "iron-list": "polymerElements/iron-list#^1.3.8",
     "paper-item": "PolymerElements/paper-item#^1.0.7",
     "paper-tabs": "polymerElements/paper-tabs#^1.0.10"
   },

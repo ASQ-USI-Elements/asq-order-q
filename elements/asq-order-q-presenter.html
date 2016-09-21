@@ -206,7 +206,7 @@
       toggleSubmissionList: function(evt, detail){
         var current = this.$.submissionList.style.display;
         this.$.submissionList.style.display = (current == 'block') ? 'none': 'block';
-        this.$.submissionList._update();
+        this.$.submissionList.notifyResize();
       },
 
       _computeItemText: function(item) {
