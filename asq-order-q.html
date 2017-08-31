@@ -33,6 +33,7 @@
       <asq-order-q-viewer
         role="viewer" 
         uid="[[uid]]"
+        value="{{value}}"
         disabled="{{disabled}}"
         event-bus="[[eventBus]]"
         sortable="[[sortable]]"
@@ -51,6 +52,7 @@
       <asq-order-q-presenter
         role="presenter" 
         uid="[[uid]]"
+        value="{{value}}"
         disabled="{{disabled}}"
         event-bus="[[eventBus]]"
         sortable="[[sortable]]"
@@ -75,6 +77,17 @@
       ],
 
       properties: {
+
+        /**
+         * The array of ordered items
+         */
+        value: {
+          type: Array,
+          notify: true,
+          observer: "_valueChanged",
+        },
+
+
         disabled: { 
           type: Boolean,
           value: false,
@@ -179,12 +192,8 @@
         return this.$$('asq-order-q-' + this.role);
       },
 
-      get value() {
-        return this._api.value;
-      },
-
-      set value(value) {
-        this._api.value = value;
+      _valueChanged: function(newVal) {
+        this.fire('questioninput', newVal)
       },
 
       /**

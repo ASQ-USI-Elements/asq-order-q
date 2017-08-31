@@ -169,6 +169,25 @@
           value: 'over'
         },
 
+        /**
+         * This is equal to value
+         * TODO (triglian): maybe it's not needed.
+         */
+        _itemNames: {
+          type: Array,
+          notify: true,
+          observer: "_itemNamesChanged",
+        },
+
+        /**
+         * The array of ordered items
+         */
+        value: {
+          type: Array,
+          notify: true,
+          observer: "_valueChanged",
+        },
+
         disabled: { 
           type: Boolean,
           value: false,
@@ -239,6 +258,7 @@
         this.async(function() {
           this._initItems();
           this._setDisabled(this.disabled);
+          this._updateItemNames()
         })
       },
 
@@ -361,6 +381,7 @@
         var draggingItem = e.dataTransfer.getData('Text');
         
         this.swap(draggingItem, droppingTarget);
+        this._updateItemNames();
 
         return false
       },
@@ -392,32 +413,35 @@
         }
       },
 
-      get value() {
-        return JSON.stringify(this._itemNames);
+      _itemNamesChanged: function(){
+        if(this.value === this._itemNames) return;
+        this.value = this._itemNames;
       },
 
-      set value(value) {
-        try {
-          this.validate(value);
-          var items = JSON.parse(value);
-          for ( var i = 0, item; item = items[i]; i++) {
-            if ( this._itemNames[i] !== item ) {
-              this.swap(this._itemNames[i], item);
-            }
+      _valueChanged: function(){
+        if(this.value === this._itemNames) return;
+
+        this.validate(this.value);
+        var items = this.value
+        for ( var i = 0, item; item = items[i]; i++) {
+          if ( this._itemNames[i] !== item ) {
+            this.swap(this._itemNames[i], item);
+            this._updateItemNames();
           }
-        } catch (e) {
-          throw e
         }
       },
 
-      get _itemNames() {
-        return [].slice.call(this.items).map(function(item) {
+      _updateItemNames() {
+        this._itemNames = [].slice.call(this.items).map(function(item) {
           return item.getAttribute(this.attrForSorted)
         }, this);
       },
 
       validate: function(value) {
-        var items = JSON.parse(value);
+        if ( typeof value === 'undefined' || value === null ) 
+          throw 'Invalid value: ' + value;
+
+        var items = value;
         if ( this.items.length !== items.length )
           throw 'Invalid value: ' + value; 
 
