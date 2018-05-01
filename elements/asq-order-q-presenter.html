@@ -1,59 +1,62 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../asq-base/asq-base.html">
 
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../iron-list/iron-list.html">
 <link rel="import" href="../../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../paper-item/paper-item.html">
 <link rel="import" href="../../paper-tabs/paper-tab.html">
 <link rel="import" href="../../paper-tabs/paper-tabs.html">
-<link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../../iron-list/iron-list.html">
 <link rel="import" href="../../paper-drawer-panel/paper-drawer-panel.html">
 
 <dom-module id="asq-order-q-presenter">
-  <style is="custom-style">
-    :host {
-      display: block;
-      --paper-tabs-selection-bar-color: #333;
-    }
-
-    #container {
-      @apply(--layout-horizontal);
-    }
-
-    #main-container {
-      @apply(--layout-flex-3);
-      @apply(--asq-order-q-main-container);
-    }
-
-
-    #list-container{
-      @apply(--layout-flex);
-      @apply(--layout-vertical);
-    }
-
-    #submissionListWrapper{
-      @apply(--layout-flex);
-    }
-
-    #submissionList {
-      @apply(--layout-flex);
-      display: none;
-    }
-
-    #submissionList paper-item{
-      overflow:hidden;
-      padding: 12px 5px 0;
-      background-color: white;
-      cursor: pointer;
-      font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
-      @apply(--shadow-elevation-2dp);
-      outline:none;
-    }
-    #submissionList paper-item[focused]{
-      background-color: var(--google-grey-300);
-    }
-  </style>
   <template>
+    <style is="custom-style">
+      :host {
+        display: block;
+        --paper-tabs-selection-bar-color: #333;
+      }
+
+      #container {
+        @apply(--layout-horizontal);
+      }
+
+      #main-container {
+        @apply(--layout-flex-3);
+        @apply(--asq-order-q-main-container);
+      }
+
+
+      #list-container{
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+      }
+
+      #submissionListWrapper{
+        @apply(--layout-flex);
+        display: none;
+      }
+
+      #submissionList {
+        @apply(--layout-flex);
+
+      }
+
+      #submissionList paper-item{
+        overflow:hidden;
+        padding: 12px 5px 0;
+        background-color: white;
+        cursor: pointer;
+        font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+        @apply(--shadow-elevation-2dp);
+        outline:none;
+      }
+
+      #submissionList paper-item[focused]{
+        background-color: var(--google-grey-300);
+      }
+    </style>
+    
     <section id="container">
       <div id="main-container">
         <content></content>
@@ -74,7 +77,6 @@
         </div> 
       </div>
     </section>
-
 
   </template>
   <script>
