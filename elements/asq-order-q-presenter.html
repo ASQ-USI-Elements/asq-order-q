@@ -56,7 +56,7 @@
         background-color: var(--google-grey-300);
       }
     </style>
-    
+
     <section id="container">
       <div id="main-container">
         <content></content>
@@ -238,7 +238,7 @@
       _selectedSubmissionItemChanged: function(newItem, old){
         if(! newItem) return;
         this._lastSelectionIndex = this.$.submissionList.items.indexOf(newItem);
-        this.value = JSON.stringify(newItem.submission);
+        this.value = newItem.submission;
       },
 
       _submissionsChanged: function(submissions) {
