@@ -458,7 +458,9 @@
       },
 
       _filterItem: function(node) {
-        return !this.excludedLocalNames[node.localName] && node.nodeType === 1;
+        return this.excludedLocalNames[node.localName] !== 1
+          && node.nodeType === 1
+          && node.matches(this.sortable || '*');
       },
 
       _valueForItem: function(item) {
